@@ -277,9 +277,7 @@ export function SalaTeleconsulta() {
     <div className="container-fluid my-4 px-4">
       <div className="row justify-content-center g-4">
         <div
-          className={
-            user?.tipo === "MEDICO" ? "col-xl-6 col-lg-5" : "col-lg-10 mx-auto"
-          }
+          className={user?.tipo === "MEDICO" ? "col-lg-6" : "col-lg-10 mx-auto"}
         >
           <div
             className="card shadow-sm border-0 h-100"
@@ -341,7 +339,7 @@ export function SalaTeleconsulta() {
         </div>
 
         {user?.tipo === "MEDICO" && (
-          <div className="col-xl-6 col-lg-7">
+          <div className="col-lg-6">
             <div
               className="card shadow-sm border-0 h-100 d-flex flex-column"
               style={{ borderRadius: "15px", minHeight: "650px" }}
