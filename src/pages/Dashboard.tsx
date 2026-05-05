@@ -783,7 +783,7 @@ export function Dashboard() {
                     Validação Obrigatória
                   </h2>
                   <p className="fs-5 text-muted mb-4">
-                    Confira os dados que serão enviados para a equipa de
+                    Confira os dados que serão enviados para a equipe de
                     moderação avaliar e validar o seu registo médico (CRM).
                   </p>
                   <div
@@ -832,7 +832,7 @@ export function Dashboard() {
                     Documentos em Análise
                   </h2>
                   <p className="fs-5 text-muted">
-                    A sua solicitação está a ser analisada pela equipa
+                    A sua solicitação está a ser analisada pela equipe
                     administrativa.
                   </p>
                 </>
