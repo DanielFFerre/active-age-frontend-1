@@ -256,6 +256,7 @@ export function SalaTeleconsulta() {
       scenario: {
         mode: ZegoUIKitPrebuilt.OneONoneCall,
       },
+      layout: "Grid", // 🔥 Força os vídeos a ficarem lado a lado (Mosaico)
       showPreJoinView: false,
       turnOnMicrophoneWhenJoining: true,
       turnOnCameraWhenJoining: true,
@@ -276,6 +277,7 @@ export function SalaTeleconsulta() {
   return (
     <div className="container-fluid my-4 px-4">
       <div className="row justify-content-center g-4">
+        {/* Coluna do Vídeo: 50% da tela no desktop */}
         <div
           className={user?.tipo === "MEDICO" ? "col-lg-6" : "col-lg-10 mx-auto"}
         >
@@ -338,6 +340,7 @@ export function SalaTeleconsulta() {
           </div>
         </div>
 
+        {/* Coluna do Prontuário: 50% da tela no desktop */}
         {user?.tipo === "MEDICO" && (
           <div className="col-lg-6">
             <div
