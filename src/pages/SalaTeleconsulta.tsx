@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ZegoUIKitPrebuilt } from "@zegocloud/zego-uikit-prebuilt";
@@ -50,6 +50,14 @@ export function SalaTeleconsulta() {
   const [atestadoCid, setAtestadoCid] = useState("");
 
   const [isSaving, setIsSaving] = useState(false);
+
+  const zpRef = useRef<any>(null);
+
+  useEffect(() => {
+    return () => {
+      encerrarChamadaDeVez();
+    };
+  }, []);
 
   useEffect(() => {
     const userStr = localStorage.getItem("activeAgeUser");
@@ -122,6 +130,12 @@ export function SalaTeleconsulta() {
     return atestadoFinal;
   };
 
+  const encerrarChamadaDeVez = () => {
+    if (zpRef.current) {
+      zpRef.current.destroy();
+    }
+  };
+
   const salvarAbaAtual = async (dados: any, msgSucesso: string) => {
     setIsSaving(true);
     try {
@@ -136,6 +150,7 @@ export function SalaTeleconsulta() {
 
       if (res.ok) {
         if (dados.finalizar) {
+          encerrarChamadaDeVez();
           Swal.fire("Sucesso!", msgSucesso, "success").then(() =>
             navigate("/dashboard"),
           );
@@ -220,7 +235,7 @@ export function SalaTeleconsulta() {
       text:
         user?.tipo === "MEDICO"
           ? "Atenção: A consulta não será encerrada até que preencha o Prontuário."
-          : "Pode sair, mas a consulta só desaparecerá quando o médico preencher o Prontuário.",
+          : "Tem certeza que deseja sair da sala?",
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#dc3545",
@@ -228,6 +243,7 @@ export function SalaTeleconsulta() {
       cancelButtonText: "Continuar",
     }).then((result) => {
       if (result.isConfirmed) {
+        encerrarChamadaDeVez();
         navigate("/dashboard");
       }
     });
@@ -249,14 +265,14 @@ export function SalaTeleconsulta() {
       user.nome,
     );
 
-    const zp = ZegoUIKitPrebuilt.create(kitToken);
+    zpRef.current = ZegoUIKitPrebuilt.create(kitToken);
 
-    zp.joinRoom({
+    zpRef.current.joinRoom({
       container: element,
       scenario: {
         mode: ZegoUIKitPrebuilt.OneONoneCall,
       },
-      layout: "Grid", // 🔥 Força os vídeos a ficarem lado a lado (Mosaico)
+      layout: "Grid",
       showPreJoinView: false,
       turnOnMicrophoneWhenJoining: true,
       turnOnCameraWhenJoining: true,
@@ -277,7 +293,6 @@ export function SalaTeleconsulta() {
   return (
     <div className="container-fluid my-4 px-4">
       <div className="row justify-content-center g-4">
-        {/* Coluna do Vídeo: 50% da tela no desktop */}
         <div
           className={user?.tipo === "MEDICO" ? "col-lg-6" : "col-lg-10 mx-auto"}
         >
@@ -340,7 +355,6 @@ export function SalaTeleconsulta() {
           </div>
         </div>
 
-        {/* Coluna do Prontuário: 50% da tela no desktop */}
         {user?.tipo === "MEDICO" && (
           <div className="col-lg-6">
             <div
