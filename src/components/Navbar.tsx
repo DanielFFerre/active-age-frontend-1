@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 export function Navbar() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userName, setUserName] = useState("");
+  const [userTipo, setUserTipo] = useState("");
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -27,9 +28,11 @@ export function Navbar() {
       setIsLoggedIn(true);
       const user = JSON.parse(userJSON);
       setUserName(user.nome);
+      setUserTipo(user.tipo || "");
     } else {
       setIsLoggedIn(false);
       setUserName("");
+      setUserTipo("");
     }
   }, [location.pathname]);
 
@@ -89,11 +92,16 @@ export function Navbar() {
             ) : isLoggedIn ? (
               <>
                 <li className="nav-item d-flex align-items-center me-lg-4 mb-3 mb-lg-0 mt-3 mt-lg-0">
-                  <span className="navbar-text fs-5">
+                  <span className="navbar-text fs-5 d-flex align-items-center gap-2">
                     Olá,{" "}
                     <strong style={{ color: "var(--aa-brown)" }}>
                       {userName}
                     </strong>
+                    {userTipo === "ADMIN" && (
+                      <span className="badge bg-dark text-white rounded-pill px-2 py-1 small">
+                        Admin
+                      </span>
+                    )}
                   </span>
                 </li>
                 <li className="nav-item me-lg-3 mb-2 mb-lg-0">
@@ -101,7 +109,12 @@ export function Navbar() {
                     className="btn btn-primary btn-lg px-4 w-100 shadow-sm"
                     to="/dashboard"
                   >
-                    <i className="bi bi-grid-fill me-2"></i> Meu Painel
+                    <i
+                      className={`bi ${
+                        userTipo === "ADMIN" ? "bi-shield-check" : "bi-grid-fill"
+                      } me-2`}
+                    ></i>
+                    {userTipo === "ADMIN" ? "Painel Admin" : "Meu Painel"}
                   </Link>
                 </li>
                 <li className="nav-item">

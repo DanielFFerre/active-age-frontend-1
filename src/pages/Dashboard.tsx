@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import Swal from "sweetalert2";
+import { AdminValidacaoMedicos } from "../components/admin/AdminValidacaoMedicos";
 
 interface Usuario {
   id: string;
@@ -52,7 +53,7 @@ export function Dashboard() {
     setUser(usuarioLogado);
 
     if (usuarioLogado.tipo === "ADMIN") {
-      carregarPendentes();
+      setIsLoading(false);
     } else {
       carregarDados(usuarioLogado);
     }
@@ -754,6 +755,40 @@ export function Dashboard() {
                 </h5>
               </div>
             </Link>
+
+            <Link to="/planos-medico" className="text-decoration-none">
+              <div
+                className="card shadow-sm border-0 service-feature bg-white p-3"
+                style={{
+                  borderRadius: "15px",
+                  borderLeft: "5px solid var(--aa-orange)",
+                }}
+              >
+                <h5
+                  style={{ color: "var(--aa-orange)" }}
+                  className="m-0 text-center py-2 fw-bold"
+                >
+                  <i className="bi bi-rocket-takeoff me-2"></i>Planos do Consultório
+                </h5>
+              </div>
+            </Link>
+
+            <Link to="/extrato-assinaturas" className="text-decoration-none">
+              <div
+                className="card shadow-sm border-0 service-feature bg-white p-3"
+                style={{
+                  borderRadius: "15px",
+                  borderLeft: "5px solid var(--aa-green)",
+                }}
+              >
+                <h5
+                  style={{ color: "var(--aa-brown)" }}
+                  className="m-0 text-center py-2 fw-bold"
+                >
+                  <i className="bi bi-receipt me-2 text-success"></i>Extrato de Assinatura
+                </h5>
+              </div>
+            </Link>
           </div>
         </div>
       );
@@ -863,61 +898,7 @@ export function Dashboard() {
   };
 
   const renderAdmin = () => (
-    <div className="row g-4 animation-fade-in">
-      <div className="col-12">
-        <h3 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
-          Validações Pendentes
-        </h3>
-        {pedidosAdmin.length === 0 ? (
-          <div className="alert alert-success border-0 shadow-sm">
-            <i className="bi bi-check-circle-fill me-2"></i>Tudo limpo! Nenhuma
-            solicitação pendente.
-          </div>
-        ) : (
-          <div className="row g-3">
-            {pedidosAdmin.map((pedido) => (
-              <div key={pedido.id} className="col-md-6">
-                <div
-                  className="card shadow-sm border-0 h-100"
-                  style={{ borderRadius: "10px" }}
-                >
-                  <div className="card-body">
-                    <div className="d-flex justify-content-between align-items-start mb-3">
-                      <div>
-                        <h5
-                          className="fw-bold mb-1"
-                          style={{ color: "var(--aa-brown)" }}
-                        >
-                          {pedido.nome}
-                        </h5>
-                        <span className="badge bg-secondary fs-6">
-                          <i className="bi bi-card-heading me-1"></i>CRM{" "}
-                          {pedido.crm}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="d-flex gap-2">
-                      <button
-                        className="btn btn-success w-50 fw-bold"
-                        onClick={() => aprovarMedico(pedido.id, pedido.nome)}
-                      >
-                        <i className="bi bi-check-lg me-1"></i> Aprovar
-                      </button>
-                      <button
-                        className="btn btn-outline-danger w-50 fw-bold"
-                        onClick={() => reprovarMedico(pedido.id, pedido.nome)}
-                      >
-                        <i className="bi bi-x-lg me-1"></i> Reprovar
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        )}
-      </div>
-    </div>
+    <AdminValidacaoMedicos />
   );
 
   return (

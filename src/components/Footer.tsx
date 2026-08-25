@@ -26,6 +26,11 @@ export function Footer() {
                 </Link>
               </li>
               <li>
+                <Link to="/planos-medico" className="text-white-50">
+                  <i className="bi bi-chevron-right me-1 small"></i>Planos para Médicos
+                </Link>
+              </li>
+              <li>
                 <Link to="/termos" className="text-white-50">
                   <i className="bi bi-chevron-right me-1 small"></i>Termos de
                   Uso

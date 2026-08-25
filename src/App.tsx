@@ -19,6 +19,9 @@ import { SalaTeleconsulta } from "./pages/SalaTeleconsulta";
 import { ExamesPaciente } from "./pages/ExamesPaciente";
 import { DocumentoMedico } from './pages/DocumentoMedico';
 import { PerfilMedicoPublico } from './pages/PerfilMedicoPublico';
+import { AdminValidacoes } from './pages/AdminValidacoes';
+import { PlanosMedico } from './pages/PlanosMedico';
+import { ExtratoAssinaturas } from './pages/ExtratoAssinaturas';
 
 function App() {
   return (
@@ -45,6 +48,14 @@ function App() {
         <Route path="/exames" element={<ExamesPaciente />} />
         <Route path="/documento/:agendamentoId/:tipo" element={<DocumentoMedico />} />
         <Route path="/medico/:medicoId" element={<PerfilMedicoPublico />} />
+        <Route path="/admin" element={<AdminValidacoes />} />
+        <Route path="/admin/validacoes" element={<AdminValidacoes />} />
+        <Route path="/planos-medico" element={<PlanosMedico />} />
+        <Route path="/consultorio-virtual" element={<PlanosMedico />} />
+        <Route path="/planos" element={<PlanosMedico />} />
+        <Route path="/extrato-assinaturas" element={<ExtratoAssinaturas />} />
+        <Route path="/minhas-assinaturas" element={<ExtratoAssinaturas />} />
+        <Route path="/admin/assinaturas" element={<ExtratoAssinaturas />} />
       </Routes>
 
       <Footer />

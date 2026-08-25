@@ -11,7 +11,7 @@ export function Login() {
   const [isLoading, setIsLoading] = useState(false);
 
   const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const valorLimpo = e.target.value.toLowerCase().trim();
+    const valorLimpo = e.target.value.trim();
     setEmail(valorLimpo);
   };
 
