@@ -10,7 +10,12 @@ export interface MedicoValidacao {
   telefone?: string;
   especializacao?: string;
   biografia?: string;
-  statusValidacao?: "PENDENTE" | "EM_ANALISE" | "APROVADO" | "REPROVADO" | string;
+  statusValidacao?:
+    | "PENDENTE"
+    | "EM_ANALISE"
+    | "APROVADO"
+    | "REPROVADO"
+    | string;
   mensagemValidacao?: string;
   dataCadastro?: string;
 }
@@ -43,14 +48,14 @@ const TEMPLATES_REPROVACAO = [
 ];
 
 const CORES_AVATAR = [
-  "#e86542",
-  "#5a3a2d",
-  "#2e7d32",
-  "#1e88e5",
-  "#8e24aa",
-  "#d81b60",
-  "#00897b",
-  "#f4511e",
+  "var(--aa-orange)",
+  "var(--aa-brown)",
+  "var(--aa-green)",
+  "var(--aa-orange)",
+  "var(--aa-brown)",
+  "var(--aa-green)",
+  "var(--aa-orange)",
+  "var(--aa-brown)",
 ];
 
 function getAvatarColor(nome: string = "") {
@@ -87,7 +92,9 @@ export function AdminValidacaoMedicos() {
   const [lastUpdated, setLastUpdated] = useState<Date>(new Date());
 
   // Filtros e controles
-  const [tabAtiva, setTabAtiva] = useState<"PENDENTES" | "APROVADOS" | "REPROVADOS" | "TODOS">("PENDENTES");
+  const [tabAtiva, setTabAtiva] = useState<
+    "PENDENTES" | "APROVADOS" | "REPROVADOS" | "TODOS"
+  >("PENDENTES");
   const [termoBusca, setTermoBusca] = useState("");
   const [filtroEspecialidade, setFiltroEspecialidade] = useState("");
   const [filtroUf, setFiltroUf] = useState("");
@@ -95,15 +102,21 @@ export function AdminValidacaoMedicos() {
   const [ordenacao, setOrdenacao] = useState<"nome" | "crm">("nome");
 
   // Modais
-  const [medicoDetalhes, setMedicoDetalhes] = useState<MedicoValidacao | null>(null);
-  const [medicoParaAprovar, setMedicoParaAprovar] = useState<MedicoValidacao | null>(null);
+  const [medicoDetalhes, setMedicoDetalhes] = useState<MedicoValidacao | null>(
+    null,
+  );
+  const [medicoParaAprovar, setMedicoParaAprovar] =
+    useState<MedicoValidacao | null>(null);
   const [mensagemAprovacao, setMensagemAprovacao] = useState(
-    "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!"
+    "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!",
   );
 
-  const [medicoParaReprovar, setMedicoParaReprovar] = useState<MedicoValidacao | null>(null);
+  const [medicoParaReprovar, setMedicoParaReprovar] =
+    useState<MedicoValidacao | null>(null);
   const [templateSelecionado, setTemplateSelecionado] = useState<number>(0);
-  const [motivoReprovacao, setMotivoReprovacao] = useState(TEMPLATES_REPROVACAO[0].mensagem);
+  const [motivoReprovacao, setMotivoReprovacao] = useState(
+    TEMPLATES_REPROVACAO[0].mensagem,
+  );
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
@@ -114,14 +127,18 @@ export function AdminValidacaoMedicos() {
     setIsRefreshing(true);
     try {
       // 1. Busca todos os médicos cadastrados
-      const resMedicos = await fetch("https://active-age-backend.onrender.com/api/usuarios/medicos");
+      const resMedicos = await fetch(
+        "https://active-age-backend.onrender.com/api/usuarios/medicos",
+      );
       let listaTodos: MedicoValidacao[] = [];
       if (resMedicos.ok) {
         listaTodos = await resMedicos.json();
       }
 
       // 2. Busca solicitações pendentes
-      const resPendentes = await fetch("https://active-age-backend.onrender.com/api/validacoes/pendentes");
+      const resPendentes = await fetch(
+        "https://active-age-backend.onrender.com/api/validacoes/pendentes",
+      );
       let listaPendentes: MedicoValidacao[] = [];
       if (resPendentes.ok) {
         listaPendentes = await resPendentes.json();
@@ -223,7 +240,11 @@ export function AdminValidacaoMedicos() {
         const st = m.statusValidacao?.toUpperCase() || "PENDENTE";
 
         // Filtro por Tab de Status
-        if (tabAtiva === "PENDENTES" && st !== "PENDENTE" && st !== "EM_ANALISE") {
+        if (
+          tabAtiva === "PENDENTES" &&
+          st !== "PENDENTE" &&
+          st !== "EM_ANALISE"
+        ) {
           return false;
         }
         if (tabAtiva === "APROVADOS" && st !== "APROVADO") {
@@ -248,7 +269,9 @@ export function AdminValidacaoMedicos() {
         // Filtro por Especialidade
         if (
           filtroEspecialidade &&
-          !m.especializacao?.toLowerCase().includes(filtroEspecialidade.toLowerCase())
+          !m.especializacao
+            ?.toLowerCase()
+            .includes(filtroEspecialidade.toLowerCase())
         ) {
           return false;
         }
@@ -289,7 +312,7 @@ export function AdminValidacaoMedicos() {
             status: "APROVADO",
             mensagem: mensagemAprovacao.trim() || "CRM validado com sucesso.",
           }),
-        }
+        },
       );
 
       if (res.ok) {
@@ -297,14 +320,24 @@ export function AdminValidacaoMedicos() {
         setMedicos((prev) =>
           prev.map((m) =>
             m.id === medicoParaAprovar.id
-              ? { ...m, statusValidacao: "APROVADO", mensagemValidacao: mensagemAprovacao }
-              : m
-          )
+              ? {
+                  ...m,
+                  statusValidacao: "APROVADO",
+                  mensagemValidacao: mensagemAprovacao,
+                }
+              : m,
+          ),
         );
 
         if (medicoDetalhes?.id === medicoParaAprovar.id) {
           setMedicoDetalhes((prev) =>
-            prev ? { ...prev, statusValidacao: "APROVADO", mensagemValidacao: mensagemAprovacao } : null
+            prev
+              ? {
+                  ...prev,
+                  statusValidacao: "APROVADO",
+                  mensagemValidacao: mensagemAprovacao,
+                }
+              : null,
           );
         }
 
@@ -355,21 +388,31 @@ export function AdminValidacaoMedicos() {
             status: "REPROVADO",
             mensagem: motivoReprovacao.trim(),
           }),
-        }
+        },
       );
 
       if (res.ok) {
         setMedicos((prev) =>
           prev.map((m) =>
             m.id === medicoParaReprovar.id
-              ? { ...m, statusValidacao: "REPROVADO", mensagemValidacao: motivoReprovacao }
-              : m
-          )
+              ? {
+                  ...m,
+                  statusValidacao: "REPROVADO",
+                  mensagemValidacao: motivoReprovacao,
+                }
+              : m,
+          ),
         );
 
         if (medicoDetalhes?.id === medicoParaReprovar.id) {
           setMedicoDetalhes((prev) =>
-            prev ? { ...prev, statusValidacao: "REPROVADO", mensagemValidacao: motivoReprovacao } : null
+            prev
+              ? {
+                  ...prev,
+                  statusValidacao: "REPROVADO",
+                  mensagemValidacao: motivoReprovacao,
+                }
+              : null,
           );
         }
 
@@ -468,7 +511,8 @@ export function AdminValidacaoMedicos() {
               Central de Validação de CRM Médico
             </h2>
             <p className="text-muted mb-0">
-              Analise, audite e aprove os cadastros de novos médicos da plataforma com checagem oficial no CFM.
+              Analise, audite e aprove os cadastros de novos médicos da
+              plataforma com checagem oficial no CFM.
             </p>
           </div>
 
@@ -487,11 +531,13 @@ export function AdminValidacaoMedicos() {
               disabled={isRefreshing}
               title="Recarregar lista de médicos"
             >
-              <i className={`bi bi-arrow-clockwise ${isRefreshing ? "spin" : ""}`}></i>
+              <i
+                className={`bi bi-arrow-clockwise ${isRefreshing ? "spin" : ""}`}
+              ></i>
               {isRefreshing ? "Atualizando..." : "Sincronizar"}
             </button>
             <button
-              className="btn btn-outline-primary px-3 py-2 d-flex align-items-center gap-2"
+              className="btn btn-outline-secondary px-3 py-2 d-flex align-items-center gap-2"
               onClick={() => abrirConsultaCfm()}
               title="Acessar portal público de busca de médicos do CFM"
             >
@@ -515,9 +561,7 @@ export function AdminValidacaoMedicos() {
                 <span className="text-muted fw-semibold small text-uppercase">
                   Pendentes de Análise
                 </span>
-                <h3 className="fw-bold my-1 text-dark">
-                  {stats.pendentes}
-                </h3>
+                <h3 className="fw-bold my-1 text-dark">{stats.pendentes}</h3>
                 <small className="text-warning fw-semibold">
                   {stats.pendentes > 0 ? "Ação recomendada" : "Tudo em dia"}
                 </small>
@@ -582,7 +626,10 @@ export function AdminValidacaoMedicos() {
                 <span className="text-muted fw-semibold small text-uppercase">
                   Total de Médicos
                 </span>
-                <h3 className="fw-bold my-1" style={{ color: "var(--aa-orange)" }}>
+                <h3
+                  className="fw-bold my-1"
+                  style={{ color: "var(--aa-orange)" }}
+                >
                   {stats.total}
                 </h3>
                 <small className="text-muted">Cadastros no sistema</small>
@@ -743,10 +790,16 @@ export function AdminValidacaoMedicos() {
       {/* LISTA PRINCIPAL (CARDS OU TABELA) */}
       {isLoading ? (
         <div className="text-center py-5">
-          <div className="spinner-border text-warning" role="status" style={{ width: "3rem", height: "3rem" }}>
+          <div
+            className="spinner-border text-warning"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          >
             <span className="visually-hidden">Carregando...</span>
           </div>
-          <p className="text-muted mt-3">Carregando cadastros médicos para análise...</p>
+          <p className="text-muted mt-3">
+            Carregando cadastros médicos para análise...
+          </p>
         </div>
       ) : medicosFiltrados.length === 0 ? (
         <div className="card shadow-sm border-0 text-center py-5 px-3 rounded-4">
@@ -791,8 +844,10 @@ export function AdminValidacaoMedicos() {
         /* MODO CARDS */
         <div className="row g-4">
           {medicosFiltrados.map((medico) => {
-            const statusUpper = medico.statusValidacao?.toUpperCase() || "PENDENTE";
-            const isPendente = statusUpper === "PENDENTE" || statusUpper === "EM_ANALISE";
+            const statusUpper =
+              medico.statusValidacao?.toUpperCase() || "PENDENTE";
+            const isPendente =
+              statusUpper === "PENDENTE" || statusUpper === "EM_ANALISE";
             const isAprovado = statusUpper === "APROVADO";
             const isReprovado = statusUpper === "REPROVADO";
 
@@ -804,8 +859,8 @@ export function AdminValidacaoMedicos() {
                     borderLeft: isPendente
                       ? "5px solid #f59e0b"
                       : isAprovado
-                      ? "5px solid var(--aa-green)"
-                      : "5px solid #ef4444",
+                        ? "5px solid var(--aa-green)"
+                        : "5px solid #ef4444",
                   }}
                 >
                   <div className="d-flex justify-content-between align-items-start mb-3">
@@ -817,7 +872,10 @@ export function AdminValidacaoMedicos() {
                         {getIniciais(medico.nome)}
                       </div>
                       <div>
-                        <h5 className="fw-bold mb-1 text-truncate" style={{ maxWidth: "200px" }}>
+                        <h5
+                          className="fw-bold mb-1 text-truncate"
+                          style={{ maxWidth: "200px" }}
+                        >
                           {medico.nome}
                         </h5>
                         <div className="d-flex align-items-center gap-2">
@@ -830,7 +888,9 @@ export function AdminValidacaoMedicos() {
                   {/* INFORMAÇÕES CHAVE */}
                   <div className="bg-light p-3 rounded-3 mb-3">
                     <div className="d-flex justify-content-between align-items-center mb-2">
-                      <span className="text-muted small fw-bold">CRM INFORMADO:</span>
+                      <span className="text-muted small fw-bold">
+                        CRM INFORMADO:
+                      </span>
                       <div className="d-flex align-items-center gap-1">
                         <span className="crm-badge-pill">
                           <i className="bi bi-card-heading text-secondary"></i>
@@ -850,13 +910,18 @@ export function AdminValidacaoMedicos() {
 
                     <div className="d-flex justify-content-between align-items-center mb-2">
                       <span className="text-muted small fw-bold">E-MAIL:</span>
-                      <span className="small text-truncate text-end ms-2" style={{ maxWidth: "180px" }}>
+                      <span
+                        className="small text-truncate text-end ms-2"
+                        style={{ maxWidth: "180px" }}
+                      >
                         {medico.email || "Não informado"}
                       </span>
                     </div>
 
                     <div className="d-flex justify-content-between align-items-center mb-1">
-                      <span className="text-muted small fw-bold">TELEFONE:</span>
+                      <span className="text-muted small fw-bold">
+                        TELEFONE:
+                      </span>
                       <span className="small">
                         {formatarTelefone(medico.telefone)}
                       </span>
@@ -880,7 +945,9 @@ export function AdminValidacaoMedicos() {
                           </span>
                         ))
                       ) : (
-                        <span className="text-muted small fst-italic">Clínica Geral / Não informada</span>
+                        <span className="text-muted small fst-italic">
+                          Clínica Geral / Não informada
+                        </span>
                       )}
                     </div>
                   </div>
@@ -888,7 +955,8 @@ export function AdminValidacaoMedicos() {
                   {/* FEEDBACK ANTERIOR SE REPROVADO */}
                   {isReprovado && medico.mensagemValidacao && (
                     <div className="alert alert-danger p-2 mb-3 small">
-                      <strong>Motivo da Reprovação:</strong> "{medico.mensagemValidacao}"
+                      <strong>Motivo da Reprovação:</strong> "
+                      {medico.mensagemValidacao}"
                     </div>
                   )}
 
@@ -902,7 +970,7 @@ export function AdminValidacaoMedicos() {
                             onClick={() => {
                               setMedicoParaAprovar(medico);
                               setMensagemAprovacao(
-                                "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!"
+                                "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!",
                               );
                             }}
                           >
@@ -927,7 +995,7 @@ export function AdminValidacaoMedicos() {
                             <i className="bi bi-eye me-1"></i> Dossiê Completo
                           </button>
                           <button
-                            className="btn btn-outline-primary btn-sm"
+                            className="btn btn-outline-secondary btn-sm"
                             onClick={() => abrirConsultaCfm(medico.crm)}
                             title="Checar no CFM oficial"
                           >
@@ -946,22 +1014,27 @@ export function AdminValidacaoMedicos() {
 
                         <div className="d-flex gap-1">
                           <button
-                            className="btn btn-light btn-sm text-primary"
+                            className="btn btn-light btn-sm"
+                            style={{ color: "var(--aa-orange)" }}
                             onClick={() => abrirConsultaCfm(medico.crm)}
                             title="Consultar no CFM"
                           >
-                            <i className="bi bi-box-arrow-up-right me-1"></i> CFM
+                            <i className="bi bi-box-arrow-up-right me-1"></i>{" "}
+                            CFM
                           </button>
                           {isReprovado && (
                             <button
                               className="btn btn-sm btn-outline-success"
                               onClick={() => {
                                 setMedicoParaAprovar(medico);
-                                setMensagemAprovacao("Reavaliação aprovada com sucesso.");
+                                setMensagemAprovacao(
+                                  "Reavaliação aprovada com sucesso.",
+                                );
                               }}
                               title="Reverter e Aprovar"
                             >
-                              <i className="bi bi-arrow-repeat me-1"></i> Reavaliar
+                              <i className="bi bi-arrow-repeat me-1"></i>{" "}
+                              Reavaliar
                             </button>
                           )}
                           {isAprovado && (
@@ -992,18 +1065,32 @@ export function AdminValidacaoMedicos() {
             <table className="table table-hover align-middle mb-0">
               <thead className="table-light">
                 <tr>
-                  <th scope="col" className="py-3 ps-4">Médico</th>
-                  <th scope="col" className="py-3">CRM / UF</th>
-                  <th scope="col" className="py-3">Especialidades</th>
-                  <th scope="col" className="py-3">Contato</th>
-                  <th scope="col" className="py-3">Status</th>
-                  <th scope="col" className="py-3 text-end pe-4">Ações</th>
+                  <th scope="col" className="py-3 ps-4">
+                    Médico
+                  </th>
+                  <th scope="col" className="py-3">
+                    CRM / UF
+                  </th>
+                  <th scope="col" className="py-3">
+                    Especialidades
+                  </th>
+                  <th scope="col" className="py-3">
+                    Contato
+                  </th>
+                  <th scope="col" className="py-3">
+                    Status
+                  </th>
+                  <th scope="col" className="py-3 text-end pe-4">
+                    Ações
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {medicosFiltrados.map((medico) => {
-                  const statusUpper = medico.statusValidacao?.toUpperCase() || "PENDENTE";
-                  const isPendente = statusUpper === "PENDENTE" || statusUpper === "EM_ANALISE";
+                  const statusUpper =
+                    medico.statusValidacao?.toUpperCase() || "PENDENTE";
+                  const isPendente =
+                    statusUpper === "PENDENTE" || statusUpper === "EM_ANALISE";
 
                   return (
                     <tr key={medico.id}>
@@ -1045,25 +1132,37 @@ export function AdminValidacaoMedicos() {
                       </td>
 
                       <td>
-                        <div className="d-flex flex-wrap gap-1" style={{ maxWidth: "250px" }}>
+                        <div
+                          className="d-flex flex-wrap gap-1"
+                          style={{ maxWidth: "250px" }}
+                        >
                           {medico.especializacao ? (
-                            medico.especializacao.split(",").slice(0, 2).map((esp, i) => (
-                              <span
-                                key={i}
-                                className="badge bg-light text-dark border"
-                                style={{ fontSize: "0.75rem" }}
-                              >
-                                {esp.trim()}
-                              </span>
-                            ))
+                            medico.especializacao
+                              .split(",")
+                              .slice(0, 2)
+                              .map((esp, i) => (
+                                <span
+                                  key={i}
+                                  className="badge bg-light text-dark border"
+                                  style={{ fontSize: "0.75rem" }}
+                                >
+                                  {esp.trim()}
+                                </span>
+                              ))
                           ) : (
-                            <span className="text-muted small">Clínica Geral</span>
-                          )}
-                          {medico.especializacao && medico.especializacao.split(",").length > 2 && (
-                            <span className="badge bg-secondary-subtle text-muted" style={{ fontSize: "0.75rem" }}>
-                              +{medico.especializacao.split(",").length - 2}
+                            <span className="text-muted small">
+                              Clínica Geral
                             </span>
                           )}
+                          {medico.especializacao &&
+                            medico.especializacao.split(",").length > 2 && (
+                              <span
+                                className="badge bg-secondary-subtle text-muted"
+                                style={{ fontSize: "0.75rem" }}
+                              >
+                                +{medico.especializacao.split(",").length - 2}
+                              </span>
+                            )}
                         </div>
                       </td>
 
@@ -1087,7 +1186,7 @@ export function AdminValidacaoMedicos() {
                                 onClick={() => {
                                   setMedicoParaAprovar(medico);
                                   setMensagemAprovacao(
-                                    "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!"
+                                    "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!",
                                   );
                                 }}
                                 title="Aprovar Médico"
@@ -1116,7 +1215,7 @@ export function AdminValidacaoMedicos() {
                           </button>
 
                           <button
-                            className="btn btn-sm btn-outline-primary"
+                            className="btn btn-sm btn-outline-secondary"
                             onClick={() => abrirConsultaCfm(medico.crm)}
                             title="Consultar no CFM"
                           >
@@ -1140,7 +1239,10 @@ export function AdminValidacaoMedicos() {
         <div
           className="modal fade show d-block"
           tabIndex={-1}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.55)", backdropFilter: "blur(4px)" }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+          }}
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
@@ -1180,8 +1282,12 @@ export function AdminValidacaoMedicos() {
                   {/* COLUNA ESQUERDA: DADOS DE CRM E CONTATO */}
                   <div className="col-md-6">
                     <div className="bg-light p-3 rounded-4 mb-3">
-                      <h6 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
-                        <i className="bi bi-shield-check me-2"></i>Credenciais Médicas
+                      <h6
+                        className="fw-bold mb-3"
+                        style={{ color: "var(--aa-brown)" }}
+                      >
+                        <i className="bi bi-shield-check me-2"></i>Credenciais
+                        Médicas
                       </h6>
 
                       <div className="mb-3">
@@ -1208,41 +1314,70 @@ export function AdminValidacaoMedicos() {
                         <label className="text-muted small fw-bold d-block mb-1">
                           STATUS DE VALIDAÇÃO
                         </label>
-                        <div>{renderStatusBadge(medicoDetalhes.statusValidacao)}</div>
+                        <div>
+                          {renderStatusBadge(medicoDetalhes.statusValidacao)}
+                        </div>
                       </div>
 
                       <div className="p-3 bg-white rounded-3 border">
                         <div className="d-flex justify-content-between align-items-center mb-1">
-                          <span className="fw-bold small text-primary">
-                            <i className="bi bi-link-45deg me-1"></i>Portal do CFM
+                          <span
+                            className="fw-bold small"
+                            style={{ color: "var(--aa-orange)" }}
+                          >
+                            <i className="bi bi-link-45deg me-1"></i>Portal do
+                            CFM
                           </span>
-                          <span className="badge bg-primary-subtle text-primary">Oficial</span>
+                          <span
+                            className="badge"
+                            style={{
+                              backgroundColor: "rgba(232, 101, 66, 0.12)",
+                              color: "var(--aa-orange)",
+                            }}
+                          >
+                            Oficial
+                          </span>
                         </div>
                         <p className="small text-muted mb-2">
-                          Consulte a situação cadastral, especialidades registradas (RQE) e penalidades éticas diretamente no banco de dados do Conselho Federal de Medicina.
+                          Consulte a situação cadastral, especialidades
+                          registradas (RQE) e penalidades éticas diretamente no
+                          banco de dados do Conselho Federal de Medicina.
                         </p>
                         <button
                           className="btn btn-primary btn-sm w-100"
                           onClick={() => abrirConsultaCfm(medicoDetalhes.crm)}
                         >
-                          <i className="bi bi-box-arrow-up-right me-1"></i> Abrir Busca no CFM
+                          <i className="bi bi-box-arrow-up-right me-1"></i>{" "}
+                          Abrir Busca no CFM
                         </button>
                       </div>
                     </div>
 
                     <div className="bg-light p-3 rounded-4">
-                      <h6 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
-                        <i className="bi bi-person-lines-fill me-2"></i>Contatos & Comunicação
+                      <h6
+                        className="fw-bold mb-3"
+                        style={{ color: "var(--aa-brown)" }}
+                      >
+                        <i className="bi bi-person-lines-fill me-2"></i>Contatos
+                        & Comunicação
                       </h6>
 
                       <div className="mb-2">
-                        <span className="text-muted small d-block">E-mail:</span>
-                        <strong>{medicoDetalhes.email || "Não informado"}</strong>
+                        <span className="text-muted small d-block">
+                          E-mail:
+                        </span>
+                        <strong>
+                          {medicoDetalhes.email || "Não informado"}
+                        </strong>
                       </div>
 
                       <div className="mb-2">
-                        <span className="text-muted small d-block">Telefone:</span>
-                        <strong>{formatarTelefone(medicoDetalhes.telefone)}</strong>
+                        <span className="text-muted small d-block">
+                          Telefone:
+                        </span>
+                        <strong>
+                          {formatarTelefone(medicoDetalhes.telefone)}
+                        </strong>
                         {medicoDetalhes.telefone && (
                           <a
                             href={`https://wa.me/55${medicoDetalhes.telefone.replace(/\D/g, "")}`}
@@ -1261,19 +1396,25 @@ export function AdminValidacaoMedicos() {
                   {/* COLUNA DIREITA: ESPECIALIDADES, BIO E FEEDBACK */}
                   <div className="col-md-6">
                     <div className="mb-4">
-                      <h6 className="fw-bold mb-2" style={{ color: "var(--aa-brown)" }}>
-                        <i className="bi bi-award me-2"></i>Especialidades Declaradas
+                      <h6
+                        className="fw-bold mb-2"
+                        style={{ color: "var(--aa-brown)" }}
+                      >
+                        <i className="bi bi-award me-2"></i>Especialidades
+                        Declaradas
                       </h6>
                       <div className="d-flex flex-wrap gap-2">
                         {medicoDetalhes.especializacao ? (
-                          medicoDetalhes.especializacao.split(",").map((esp, i) => (
-                            <span
-                              key={i}
-                              className="badge bg-secondary-subtle text-secondary-emphasis border px-3 py-2 rounded-pill fs-6"
-                            >
-                              {esp.trim()}
-                            </span>
-                          ))
+                          medicoDetalhes.especializacao
+                            .split(",")
+                            .map((esp, i) => (
+                              <span
+                                key={i}
+                                className="badge bg-secondary-subtle text-secondary-emphasis border px-3 py-2 rounded-pill fs-6"
+                              >
+                                {esp.trim()}
+                              </span>
+                            ))
                         ) : (
                           <p className="text-muted fst-italic small">
                             Nenhuma especialidade específica declarada.
@@ -1283,13 +1424,21 @@ export function AdminValidacaoMedicos() {
                     </div>
 
                     <div className="mb-4">
-                      <h6 className="fw-bold mb-2" style={{ color: "var(--aa-brown)" }}>
-                        <i className="bi bi-file-text me-2"></i>Biografia / Apresentação
+                      <h6
+                        className="fw-bold mb-2"
+                        style={{ color: "var(--aa-brown)" }}
+                      >
+                        <i className="bi bi-file-text me-2"></i>Biografia /
+                        Apresentação
                       </h6>
-                      <div className="p-3 bg-light rounded-3 text-muted" style={{ minHeight: "100px" }}>
+                      <div
+                        className="p-3 bg-light rounded-3 text-muted"
+                        style={{ minHeight: "100px" }}
+                      >
                         {medicoDetalhes.biografia || (
                           <span className="fst-italic">
-                            O profissional ainda não preencheu a sua apresentação profissional no perfil.
+                            O profissional ainda não preencheu a sua
+                            apresentação profissional no perfil.
                           </span>
                         )}
                       </div>
@@ -1299,7 +1448,8 @@ export function AdminValidacaoMedicos() {
                     {medicoDetalhes.mensagemValidacao && (
                       <div
                         className={`alert ${
-                          medicoDetalhes.statusValidacao?.toUpperCase() === "REPROVADO"
+                          medicoDetalhes.statusValidacao?.toUpperCase() ===
+                          "REPROVADO"
                             ? "alert-danger"
                             : "alert-info"
                         } mb-0`}
@@ -1308,7 +1458,9 @@ export function AdminValidacaoMedicos() {
                           <i className="bi bi-chat-left-dots me-1"></i>
                           Feedback Registrado:
                         </h6>
-                        <p className="mb-0 small">"{medicoDetalhes.mensagemValidacao}"</p>
+                        <p className="mb-0 small">
+                          "{medicoDetalhes.mensagemValidacao}"
+                        </p>
                       </div>
                     )}
                   </div>
@@ -1346,7 +1498,7 @@ export function AdminValidacaoMedicos() {
                       setMedicoDetalhes(null);
                       setMedicoParaAprovar(medico);
                       setMensagemAprovacao(
-                        "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!"
+                        "Documentos e CRM verificados com sucesso. Seja bem-vindo(a) ao corpo clínico do Active Age!",
                       );
                     }}
                   >
@@ -1366,13 +1518,17 @@ export function AdminValidacaoMedicos() {
         <div
           className="modal fade show d-block"
           tabIndex={-1}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.55)", backdropFilter: "blur(4px)" }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+          }}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
               <div className="modal-header bg-success text-white p-3">
                 <h5 className="modal-title fw-bold">
-                  <i className="bi bi-patch-check-fill me-2"></i> Aprovar Cadastro de Médico
+                  <i className="bi bi-patch-check-fill me-2"></i> Aprovar
+                  Cadastro de Médico
                 </h5>
                 <button
                   type="button"
@@ -1403,7 +1559,9 @@ export function AdminValidacaoMedicos() {
 
                 <div className="alert alert-success border-0 small mb-3">
                   <i className="bi bi-info-circle-fill me-2"></i>
-                  Ao aprovar, o médico receberá permissão para abrir agenda de consultas, realizar atendimentos por teleconsulta e emitir prescrições no Active Age.
+                  Ao aprovar, o médico receberá permissão para abrir agenda de
+                  consultas, realizar atendimentos por teleconsulta e emitir
+                  prescrições no Active Age.
                 </div>
 
                 <div className="mb-2">
@@ -1437,12 +1595,16 @@ export function AdminValidacaoMedicos() {
                 >
                   {isSubmitting ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
                       Processando...
                     </>
                   ) : (
                     <>
-                      <i className="bi bi-check2-circle me-1"></i> Confirmar Aprovação
+                      <i className="bi bi-check2-circle me-1"></i> Confirmar
+                      Aprovação
                     </>
                   )}
                 </button>
@@ -1459,13 +1621,17 @@ export function AdminValidacaoMedicos() {
         <div
           className="modal fade show d-block"
           tabIndex={-1}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.55)", backdropFilter: "blur(4px)" }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+          }}
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
               <div className="modal-header bg-danger text-white p-3">
                 <h5 className="modal-title fw-bold">
-                  <i className="bi bi-x-octagon-fill me-2"></i> Reprovar / Solicitar Correção de CRM
+                  <i className="bi bi-x-octagon-fill me-2"></i> Reprovar /
+                  Solicitar Correção de CRM
                 </h5>
                 <button
                   type="button"
@@ -1490,7 +1656,8 @@ export function AdminValidacaoMedicos() {
                   <div>
                     <h6 className="fw-bold mb-0">{medicoParaReprovar.nome}</h6>
                     <small className="text-muted">
-                      CRM: {medicoParaReprovar.crm || "Não informado"} | {medicoParaReprovar.email}
+                      CRM: {medicoParaReprovar.crm || "Não informado"} |{" "}
+                      {medicoParaReprovar.email}
                     </small>
                   </div>
                 </div>
@@ -1533,7 +1700,8 @@ export function AdminValidacaoMedicos() {
                     ></textarea>
                     <div className="d-flex justify-content-between align-items-center">
                       <small className="text-muted">
-                        Esta mensagem aparecerá no painel do médico para que ele edite seu perfil.
+                        Esta mensagem aparecerá no painel do médico para que ele
+                        edite seu perfil.
                       </small>
                       <small className="text-muted fw-bold">
                         {motivoReprovacao.length} carac.
@@ -1560,7 +1728,10 @@ export function AdminValidacaoMedicos() {
                 >
                   {isSubmitting ? (
                     <>
-                      <span className="spinner-border spinner-border-sm me-2" role="status"></span>
+                      <span
+                        className="spinner-border spinner-border-sm me-2"
+                        role="status"
+                      ></span>
                       Enviando...
                     </>
                   ) : (

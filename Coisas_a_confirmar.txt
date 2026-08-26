@@ -1,0 +1,7 @@
+1- O admin tem a opção de contactar o médico via zap retirar esse vincculo/tirar o acesso do admin a esse dado
+
+ADM-
+Pág: Gestão e Extrato de Assinaturas dos Médicos
+Extrato de Assinatura está sobrepondo o Recibo de Pagamento
+
+Mudar cores

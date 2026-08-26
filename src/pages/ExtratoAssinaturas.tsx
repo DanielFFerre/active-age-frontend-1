@@ -147,7 +147,8 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
 export function ExtratoAssinaturas() {
   const navigate = useNavigate();
   const [usuarioLogado, setUsuarioLogado] = useState<any>(null);
-  const [listaAssinaturas, setListaAssinaturas] = useState<AssinaturaMedico[]>(ASSINATURAS_INICIAIS);
+  const [listaAssinaturas, setListaAssinaturas] =
+    useState<AssinaturaMedico[]>(ASSINATURAS_INICIAIS);
   const [termoBusca, setTermoBusca] = useState("");
   const [filtroStatus, setFiltroStatus] = useState("");
   const [filtroPlano, setFiltroPlano] = useState("");
@@ -164,7 +165,8 @@ export function ExtratoAssinaturas() {
   const [faturaParaPagar, setFaturaParaPagar] = useState<Fatura | null>(null);
 
   // Modal de Extrato Completo de um Médico específico (para o Admin)
-  const [medicoExtratoModal, setMedicoExtratoModal] = useState<AssinaturaMedico | null>(null);
+  const [medicoExtratoModal, setMedicoExtratoModal] =
+    useState<AssinaturaMedico | null>(null);
 
   useEffect(() => {
     const userStr = localStorage.getItem("activeAgeUser");
@@ -193,7 +195,9 @@ export function ExtratoAssinaturas() {
   const minhaAssinatura = useMemo(() => {
     if (!usuarioLogado) return null;
     const encontrada = listaAssinaturas.find(
-      (a) => a.medicoId === usuarioLogado.id || a.medicoEmail === usuarioLogado.email
+      (a) =>
+        a.medicoId === usuarioLogado.id ||
+        a.medicoEmail === usuarioLogado.email,
     );
     if (encontrada) return encontrada;
 
@@ -305,7 +309,7 @@ export function ExtratoAssinaturas() {
                   status: "PAGA" as const,
                   dataPagamento: new Date().toLocaleString("pt-BR"),
                 }
-              : f
+              : f,
           ),
         };
       }
@@ -316,7 +320,9 @@ export function ExtratoAssinaturas() {
     localStorage.setItem("activeAgeAssinaturas", JSON.stringify(atualizadas));
 
     if (medicoExtratoModal?.medicoId === medicoId) {
-      setMedicoExtratoModal(atualizadas.find((a) => a.medicoId === medicoId) || null);
+      setMedicoExtratoModal(
+        atualizadas.find((a) => a.medicoId === medicoId) || null,
+      );
     }
 
     Swal.fire({
@@ -333,13 +339,27 @@ export function ExtratoAssinaturas() {
     switch (status) {
       case "ATIVA":
         return (
-          <span className="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-semibold">
+          <span
+            className="badge px-3 py-2 rounded-pill fw-semibold"
+            style={{
+              backgroundColor: "rgba(144, 194, 141, 0.2)",
+              color: "var(--aa-green)",
+              border: "1px solid var(--aa-green)",
+            }}
+          >
             <i className="bi bi-check-circle-fill me-1"></i> Ativa
           </span>
         );
       case "PENDENTE":
         return (
-          <span className="badge bg-warning-subtle text-warning-emphasis border border-warning-subtle px-3 py-2 rounded-pill fw-semibold">
+          <span
+            className="badge px-3 py-2 rounded-pill fw-semibold"
+            style={{
+              backgroundColor: "rgba(232, 101, 66, 0.12)",
+              color: "var(--aa-orange)",
+              border: "1px solid var(--aa-orange)",
+            }}
+          >
             <i className="bi bi-hourglass-split me-1"></i> Pendente
           </span>
         );
@@ -364,13 +384,19 @@ export function ExtratoAssinaturas() {
     switch (status) {
       case "PAGA":
         return (
-          <span className="badge bg-success text-white px-2 py-1 rounded">
+          <span
+            className="badge text-white px-2 py-1 rounded"
+            style={{ backgroundColor: "var(--aa-green)" }}
+          >
             <i className="bi bi-check-lg me-1"></i> Paga
           </span>
         );
       case "PENDENTE":
         return (
-          <span className="badge bg-warning text-dark px-2 py-1 rounded">
+          <span
+            className="badge text-white px-2 py-1 rounded"
+            style={{ backgroundColor: "var(--aa-orange)" }}
+          >
             <i className="bi bi-clock me-1"></i> Aguardando
           </span>
         );
@@ -381,7 +407,9 @@ export function ExtratoAssinaturas() {
           </span>
         );
       default:
-        return <span className="badge bg-secondary px-2 py-1 rounded">{status}</span>;
+        return (
+          <span className="badge bg-secondary px-2 py-1 rounded">{status}</span>
+        );
     }
   };
 
@@ -432,13 +460,20 @@ export function ExtratoAssinaturas() {
                 <span className="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold mb-2">
                   PLANO ATIVO
                 </span>
-                <h3 className="fw-bold mb-0 text-white">{minhaAssinatura.planoNome}</h3>
+                <h3 className="fw-bold mb-0 text-white">
+                  {minhaAssinatura.planoNome}
+                </h3>
               </div>
 
               <div className="d-flex align-items-center gap-3">
                 <div className="text-end">
-                  <span className="text-white-50 small d-block">VALOR DA ASSINATURA</span>
-                  <span className="fs-3 fw-bold" style={{ color: "var(--aa-orange)" }}>
+                  <span className="text-white-50 small d-block">
+                    VALOR DA ASSINATURA
+                  </span>
+                  <span
+                    className="fs-3 fw-bold"
+                    style={{ color: "var(--aa-orange)" }}
+                  >
                     R$ {minhaAssinatura.valor.toFixed(2)}
                   </span>
                   <span className="text-white-50">
@@ -467,7 +502,10 @@ export function ExtratoAssinaturas() {
                     Próxima Cobrança:
                   </span>
                   <h5 className="fw-bold text-dark mb-1">
-                    <i className="bi bi-calendar-check text-success me-2"></i>
+                    <i
+                      className="bi bi-calendar-check me-2"
+                      style={{ color: "var(--aa-green)" }}
+                    ></i>
                     {minhaAssinatura.proximaCobranca}
                   </h5>
                   <small className="text-muted">
@@ -479,7 +517,7 @@ export function ExtratoAssinaturas() {
                   <div className="d-flex flex-column flex-md-row justify-content-md-end gap-2">
                     <Link
                       to="/planos-medico"
-                      className="btn btn-outline-primary fw-bold"
+                      className="btn btn-outline-secondary fw-bold"
                     >
                       <i className="bi bi-arrow-repeat me-1"></i> Alterar Plano
                     </Link>
@@ -499,7 +537,8 @@ export function ExtratoAssinaturas() {
           <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
             <div className="card-header bg-light p-3 d-flex justify-content-between align-items-center">
               <h5 className="fw-bold mb-0" style={{ color: "var(--aa-brown)" }}>
-                <i className="bi bi-receipt me-2"></i>Histórico de Faturas e Comprovantes
+                <i className="bi bi-receipt me-2"></i>Histórico de Faturas e
+                Comprovantes
               </h5>
               <span className="text-muted small">
                 {minhaAssinatura.faturas.length} registro(s) encontrado(s)
@@ -510,13 +549,17 @@ export function ExtratoAssinaturas() {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col" className="ps-4">Código / ID</th>
+                    <th scope="col" className="ps-4">
+                      Código / ID
+                    </th>
                     <th scope="col">Competência</th>
                     <th scope="col">Data Pagamento</th>
                     <th scope="col">Forma de Pagamento</th>
                     <th scope="col">Valor</th>
                     <th scope="col">Status</th>
-                    <th scope="col" className="text-end pe-4">Comprovante</th>
+                    <th scope="col" className="text-end pe-4">
+                      Comprovante
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -542,7 +585,7 @@ export function ExtratoAssinaturas() {
                       <td className="text-end pe-4">
                         {fatura.status !== "PAGA" && (
                           <button
-                            className="btn btn-sm btn-success fw-bold me-1 shadow-sm"
+                            className="btn btn-sm btn-primary fw-bold me-1 shadow-sm"
                             onClick={() => setFaturaParaPagar(fatura)}
                             title="Pagar Fatura com Mercado Pago"
                           >
@@ -561,7 +604,8 @@ export function ExtratoAssinaturas() {
                           }
                           title="Visualizar Comprovante / Recibo"
                         >
-                          <i className="bi bi-file-earmark-text me-1"></i> Recibo
+                          <i className="bi bi-file-earmark-text me-1"></i>{" "}
+                          Recibo
                         </button>
                       </td>
                     </tr>
@@ -587,10 +631,15 @@ export function ExtratoAssinaturas() {
                     <span className="text-muted fw-semibold small text-uppercase">
                       Receita Mensal (MRR)
                     </span>
-                    <h3 className="fw-bold my-1" style={{ color: "var(--aa-orange)" }}>
+                    <h3
+                      className="fw-bold my-1"
+                      style={{ color: "var(--aa-orange)" }}
+                    >
                       R$ {statsAdmin.mrr.toFixed(2)}
                     </h3>
-                    <small className="text-muted">Assinaturas recorrentes</small>
+                    <small className="text-muted">
+                      Assinaturas recorrentes
+                    </small>
                   </div>
                   <div className="admin-stat-icon icon-total">
                     <i className="bi bi-cash-stack"></i>
@@ -606,7 +655,12 @@ export function ExtratoAssinaturas() {
                     <span className="text-muted fw-semibold small text-uppercase">
                       Assinaturas Ativas
                     </span>
-                    <h3 className="fw-bold my-1 text-success">{statsAdmin.ativas}</h3>
+                    <h3
+                      className="fw-bold my-1"
+                      style={{ color: "var(--aa-green)" }}
+                    >
+                      {statsAdmin.ativas}
+                    </h3>
                     <small className="text-muted">Médicos em dia</small>
                   </div>
                   <div className="admin-stat-icon icon-approved">
@@ -623,7 +677,10 @@ export function ExtratoAssinaturas() {
                     <span className="text-muted fw-semibold small text-uppercase">
                       Pendentes / Atrasadas
                     </span>
-                    <h3 className="fw-bold my-1 text-warning-emphasis">
+                    <h3
+                      className="fw-bold my-1"
+                      style={{ color: "var(--aa-orange)" }}
+                    >
                       {statsAdmin.pendentes}
                     </h3>
                     <small className="text-muted">Aguardando confirmação</small>
@@ -636,18 +693,29 @@ export function ExtratoAssinaturas() {
             </div>
 
             <div className="col-12 col-sm-6 col-lg-3">
-              <div className="admin-stat-card p-3" style={{ borderLeft: "5px solid #1e88e5" }}>
+              <div
+                className="admin-stat-card stat-total p-3"
+                style={{ borderLeftColor: "var(--aa-orange)" }}
+              >
                 <div className="d-flex justify-content-between align-items-center">
                   <div>
                     <span className="text-muted fw-semibold small text-uppercase">
                       Total de Médicos
                     </span>
-                    <h3 className="fw-bold my-1 text-primary">{statsAdmin.total}</h3>
+                    <h3
+                      className="fw-bold my-1"
+                      style={{ color: "var(--aa-orange)" }}
+                    >
+                      {statsAdmin.total}
+                    </h3>
                     <small className="text-muted">Cadastros monitorados</small>
                   </div>
                   <div
                     className="admin-stat-icon"
-                    style={{ backgroundColor: "rgba(30, 136, 229, 0.15)", color: "#1e88e5" }}
+                    style={{
+                      backgroundColor: "rgba(232, 101, 66, 0.12)",
+                      color: "var(--aa-orange)",
+                    }}
                   >
                     <i className="bi bi-person-badge-fill"></i>
                   </div>
@@ -731,13 +799,17 @@ export function ExtratoAssinaturas() {
               <table className="table table-hover align-middle mb-0">
                 <thead className="table-light">
                   <tr>
-                    <th scope="col" className="ps-4">Médico</th>
+                    <th scope="col" className="ps-4">
+                      Médico
+                    </th>
                     <th scope="col">CRM</th>
                     <th scope="col">Plano Assinado</th>
                     <th scope="col">Valor / Ciclo</th>
                     <th scope="col">Status</th>
                     <th scope="col">Próxima Cobrança</th>
-                    <th scope="col" className="text-end pe-4">Extrato & Ações</th>
+                    <th scope="col" className="text-end pe-4">
+                      Extrato & Ações
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
@@ -748,7 +820,9 @@ export function ExtratoAssinaturas() {
                           <span className="fw-bold d-block text-dark">
                             {item.medicoNome}
                           </span>
-                          <small className="text-muted">{item.medicoEmail}</small>
+                          <small className="text-muted">
+                            {item.medicoEmail}
+                          </small>
                         </div>
                       </td>
                       <td>
@@ -760,7 +834,10 @@ export function ExtratoAssinaturas() {
                         </span>
                       </td>
                       <td>
-                        <span className="fw-bold" style={{ color: "var(--aa-orange)" }}>
+                        <span
+                          className="fw-bold"
+                          style={{ color: "var(--aa-orange)" }}
+                        >
                           R$ {item.valor.toFixed(2)}
                         </span>
                         <span className="text-muted small">
@@ -769,7 +846,9 @@ export function ExtratoAssinaturas() {
                       </td>
                       <td>{renderBadgeStatusAssinatura(item.status)}</td>
                       <td>
-                        <span className="small text-muted">{item.proximaCobranca}</span>
+                        <span className="small text-muted">
+                          {item.proximaCobranca}
+                        </span>
                       </td>
                       <td className="text-end pe-4">
                         <button
@@ -777,7 +856,8 @@ export function ExtratoAssinaturas() {
                           onClick={() => setMedicoExtratoModal(item)}
                           title="Ver Extrato e Faturas do Médico"
                         >
-                          <i className="bi bi-clock-history me-1"></i> Ver Extrato ({item.faturas.length})
+                          <i className="bi bi-clock-history me-1"></i> Ver
+                          Extrato ({item.faturas.length})
                         </button>
                       </td>
                     </tr>
@@ -796,7 +876,10 @@ export function ExtratoAssinaturas() {
         <div
           className="modal fade show d-block"
           tabIndex={-1}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.55)", backdropFilter: "blur(4px)" }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+          }}
         >
           <div className="modal-dialog modal-dialog-centered">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
@@ -805,7 +888,8 @@ export function ExtratoAssinaturas() {
                 style={{ backgroundColor: "var(--aa-brown)" }}
               >
                 <h5 className="modal-title fw-bold">
-                  <i className="bi bi-receipt-cutoff me-2"></i> Recibo de Pagamento
+                  <i className="bi bi-receipt-cutoff me-2"></i> Recibo de
+                  Pagamento
                 </h5>
                 <button
                   type="button"
@@ -822,10 +906,15 @@ export function ExtratoAssinaturas() {
                     height="50"
                     className="mx-auto mb-2"
                   />
-                  <h6 className="fw-bold mb-0" style={{ color: "var(--aa-brown)" }}>
+                  <h6
+                    className="fw-bold mb-0"
+                    style={{ color: "var(--aa-brown)" }}
+                  >
                     Active Age Consultório Virtual
                   </h6>
-                  <small className="text-muted">Comprovante Eletrônico de Quitação</small>
+                  <small className="text-muted">
+                    Comprovante Eletrônico de Quitação
+                  </small>
 
                   <hr className="my-3" />
 
@@ -848,7 +937,9 @@ export function ExtratoAssinaturas() {
                     </div>
                     <div className="d-flex justify-content-between mb-2">
                       <span className="text-muted">Código da Fatura:</span>
-                      <span className="font-monospace">{faturaVisualizada.fatura.id}</span>
+                      <span className="font-monospace">
+                        {faturaVisualizada.fatura.id}
+                      </span>
                     </div>
                     <div className="d-flex justify-content-between mb-2">
                       <span className="text-muted">Data/Hora:</span>
@@ -863,7 +954,9 @@ export function ExtratoAssinaturas() {
                     </div>
 
                     <div className="p-2 bg-light rounded text-center my-3 border">
-                      <span className="text-muted small d-block">VALOR PAGO</span>
+                      <span className="text-muted small d-block">
+                        VALOR PAGO
+                      </span>
                       <span className="fs-4 fw-bold text-success">
                         R$ {faturaVisualizada.fatura.valor.toFixed(2)}
                       </span>
@@ -900,7 +993,10 @@ export function ExtratoAssinaturas() {
         <div
           className="modal fade show d-block"
           tabIndex={-1}
-          style={{ backgroundColor: "rgba(0, 0, 0, 0.55)", backdropFilter: "blur(4px)" }}
+          style={{
+            backgroundColor: "rgba(0, 0, 0, 0.55)",
+            backdropFilter: "blur(4px)",
+          }}
         >
           <div className="modal-dialog modal-dialog-centered modal-lg">
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
@@ -914,7 +1010,8 @@ export function ExtratoAssinaturas() {
                     Extrato de Assinatura: {medicoExtratoModal.medicoNome}
                   </h5>
                   <span className="text-white-50 small">
-                    CRM: {medicoExtratoModal.medicoCrm} | {medicoExtratoModal.medicoEmail}
+                    CRM: {medicoExtratoModal.medicoCrm} |{" "}
+                    {medicoExtratoModal.medicoEmail}
                   </span>
                 </div>
                 <button
@@ -928,48 +1025,71 @@ export function ExtratoAssinaturas() {
                 <div className="row g-3 mb-4">
                   <div className="col-md-4">
                     <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">Plano Atual</small>
-                      <strong className="fs-6">{medicoExtratoModal.planoNome}</strong>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">Valor / Ciclo</small>
-                      <strong className="fs-6 text-dark">
-                        R$ {medicoExtratoModal.valor.toFixed(2)} ({medicoExtratoModal.ciclo})
+                      <small className="text-muted d-block text-uppercase fw-bold">
+                        Plano Atual
+                      </small>
+                      <strong className="fs-6">
+                        {medicoExtratoModal.planoNome}
                       </strong>
                     </div>
                   </div>
                   <div className="col-md-4">
                     <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">Status</small>
-                      <div>{renderBadgeStatusAssinatura(medicoExtratoModal.status)}</div>
+                      <small className="text-muted d-block text-uppercase fw-bold">
+                        Valor / Ciclo
+                      </small>
+                      <strong className="fs-6 text-dark">
+                        R$ {medicoExtratoModal.valor.toFixed(2)} (
+                        {medicoExtratoModal.ciclo})
+                      </strong>
+                    </div>
+                  </div>
+                  <div className="col-md-4">
+                    <div className="p-3 bg-light rounded-3">
+                      <small className="text-muted d-block text-uppercase fw-bold">
+                        Status
+                      </small>
+                      <div>
+                        {renderBadgeStatusAssinatura(medicoExtratoModal.status)}
+                      </div>
                     </div>
                   </div>
                 </div>
 
-                <h6 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
-                  <i className="bi bi-receipt me-2"></i>Faturas e Cobranças Geradas
+                <h6
+                  className="fw-bold mb-3"
+                  style={{ color: "var(--aa-brown)" }}
+                >
+                  <i className="bi bi-receipt me-2"></i>Faturas e Cobranças
+                  Geradas
                 </h6>
 
                 <div className="table-responsive border rounded-3">
                   <table className="table table-hover align-middle mb-0">
                     <thead className="table-light">
                       <tr>
-                        <th scope="col" className="ps-3">ID Fatura</th>
+                        <th scope="col" className="ps-3">
+                          ID Fatura
+                        </th>
                         <th scope="col">Competência</th>
                         <th scope="col">Data</th>
                         <th scope="col">Valor</th>
                         <th scope="col">Status</th>
-                        <th scope="col" className="text-end pe-3">Ações Admin</th>
+                        <th scope="col" className="text-end pe-3">
+                          Ações Admin
+                        </th>
                       </tr>
                     </thead>
                     <tbody>
                       {medicoExtratoModal.faturas.map((fat) => (
                         <tr key={fat.id}>
-                          <td className="ps-3 font-monospace small">{fat.id}</td>
+                          <td className="ps-3 font-monospace small">
+                            {fat.id}
+                          </td>
                           <td>{fat.competencia}</td>
-                          <td className="small">{fat.dataPagamento || fat.dataEmissao}</td>
+                          <td className="small">
+                            {fat.dataPagamento || fat.dataEmissao}
+                          </td>
                           <td className="fw-bold">R$ {fat.valor.toFixed(2)}</td>
                           <td>{renderBadgeStatusFatura(fat.status)}</td>
                           <td className="text-end pe-3">
@@ -979,7 +1099,7 @@ export function ExtratoAssinaturas() {
                                 onClick={() =>
                                   handleSimularPagamentoAdmin(
                                     medicoExtratoModal.medicoId,
-                                    fat.id
+                                    fat.id,
                                   )
                                 }
                                 title="Confirmar pagamento manualmente"
@@ -1043,14 +1163,17 @@ export function ExtratoAssinaturas() {
                           status: "PAGA" as const,
                           dataPagamento: new Date().toLocaleString("pt-BR"),
                         }
-                      : f
+                      : f,
                   ),
                 };
               }
               return a;
             });
             setListaAssinaturas(atualizadas);
-            localStorage.setItem("activeAgeAssinaturas", JSON.stringify(atualizadas));
+            localStorage.setItem(
+              "activeAgeAssinaturas",
+              JSON.stringify(atualizadas),
+            );
             Swal.fire({
               icon: "success",
               title: "Fatura Paga com Sucesso!",
