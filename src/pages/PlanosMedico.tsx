@@ -3,18 +3,15 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ModalPagamentoMercadoPago } from "../components/pagamento/ModalPagamentoMercadoPago";
 
-// =========================================================================
-// 📝 CONFIGURAÇÃO DOS PLANOS DO CONSULTÓRIO VIRTUAL
-// Você pode alterar livremente os nomes, preços, descrições e recursos abaixo:
-// =========================================================================
+
 interface PlanoConsultorio {
   id: string;
   nome: string;
   badge?: string;
   destaque?: boolean;
   icone: string;
-  precoMensal: string; // Ex: "99" ou "99,90"
-  precoAnual: string;  // Ex: "79" ou "79,90" (valor mensal no plano anual)
+  precoMensal: string;
+  precoAnual: string;
   descricao: string;
   recursos: string[];
   recursosNaoInclusos?: string[];
@@ -23,29 +20,8 @@ interface PlanoConsultorio {
 
 const PLANOS_DISPONIVEIS: PlanoConsultorio[] = [
   {
-    id: "plano-start",
-    nome: "Plano Básico / Start",
-    icone: "bi-rocket-takeoff-fill",
-    precoMensal: "99",
-    precoAnual: "79",
-    descricao: "Ideal para médicos que estão iniciando seus atendimentos online na geriatria.",
-    recursos: [
-      "Até 30 teleconsultas por mês",
-      "Sala virtual criptografada com vídeo HD",
-      "Prontuário eletrônico básico do paciente",
-      "Agenda de horários customizável",
-      "Suporte por e-mail em dias úteis",
-    ],
-    recursosNaoInclusos: [
-      "Prescrição digital com assinatura ICP-Brasil",
-      "Lembretes automáticos por WhatsApp",
-      "Destaque na lista de buscas",
-    ],
-    textoBotao: "Assinar Plano Start",
-  },
-  {
     id: "plano-pro",
-    nome: "Plano Profissional / Pro",
+    nome: "Plano Profissional Pro",
     badge: "MAIS ESCOLHIDO",
     destaque: true,
     icone: "bi-star-fill",
@@ -59,38 +35,16 @@ const PLANOS_DISPONIVEIS: PlanoConsultorio[] = [
       "Emissão de receitas, laudos e atestados digitais",
       "Lembretes automáticos de consulta por WhatsApp",
       "Selo de Médico Verificado e destaque na busca",
+      "Agenda de horários customizável",
       "Suporte prioritário via WhatsApp",
     ],
-    recursosNaoInclusos: [
-      "Múltiplos acessos para secretária/recepção",
-    ],
-    textoBotao: "Assinar Plano Profissional",
-  },
-  {
-    id: "plano-clinica",
-    nome: "Plano Clínica / Premium",
-    badge: "MULTI-USUÁRIOS",
-    icone: "bi-buildings-fill",
-    precoMensal: "349",
-    precoAnual: "279",
-    descricao: "Para consultórios consolidados, clínicas geriátricas e equipes multidisciplinares.",
-    recursos: [
-      "Tudo do Plano Profissional",
-      "Teleconsultas ILIMITADAS para toda a equipe",
-      "Até 3 consultórios virtuais simultâneos",
-      "Acesso dedicado para secretária e recepção",
-      "Relatórios financeiros e métricas de atendimento",
-      "Personalização visual com a marca da clínica",
-      "Gerente de conta e suporte VIP 24/7",
-    ],
-    textoBotao: "Assinar Plano Clínica",
+    textoBotao: "Assinar Plano Profissional Pro",
   },
 ];
 
-// =========================================================================
-// ❓ PERGUNTAS FREQUENTES (FAQ)
-// Adicione ou edite perguntas e respostas comuns para os médicos:
-// =========================================================================
+
+//alterar perguntas e respostas 
+
 const PERGUNTAS_FREQUENTES = [
   {
     pergunta: "Preciso ter meu CRM validado para assinar um plano?",
@@ -103,9 +57,9 @@ const PERGUNTAS_FREQUENTES = [
       "No plano mensal, o valor é debitado a cada 30 dias. No plano anual, você garante um desconto especial no valor mensal com cobrança única ou parcelada no cartão de crédito.",
   },
   {
-    pergunta: "Posso cancelar ou trocar de plano quando quiser?",
+    pergunta: "Posso cancelar minha assinatura quando quiser?",
     resposta:
-      "Sim! Você pode fazer upgrade, downgrade ou cancelamento da sua assinatura diretamente pelo painel a qualquer momento, sem fidelidade oculta.",
+      "Sim! Você pode fazer o cancelamento da sua assinatura diretamente pelo painel a qualquer momento, sem taxas ocultas ou fidelidade.",
   },
   {
     pergunta: "A teleconsulta atende às normas do CFM e da LGPD?",
@@ -161,7 +115,7 @@ export function PlanosMedico() {
           </span>
         </div>
         <h1 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
-          Planos de Assinatura para Médicos
+          Plano de Assinatura para Médicos
         </h1>
         <p className="lead text-muted mx-auto" style={{ maxWidth: "750px" }}>
           Abra o seu consultório virtual, atenda pacientes da terceira idade com
@@ -171,9 +125,8 @@ export function PlanosMedico() {
         {/* TOGGLE MENSAL / ANUAL */}
         <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
           <span
-            className={`fw-bold cursor-pointer ${
-              cicloCobranca === "MENSAL" ? "text-dark" : "text-muted"
-            }`}
+            className={`fw-bold cursor-pointer ${cicloCobranca === "MENSAL" ? "text-dark" : "text-muted"
+              }`}
             onClick={() => setCicloCobranca("MENSAL")}
             role="button"
           >
@@ -195,9 +148,8 @@ export function PlanosMedico() {
           </div>
 
           <span
-            className={`fw-bold cursor-pointer d-flex align-items-center gap-2 ${
-              cicloCobranca === "ANUAL" ? "text-dark" : "text-muted"
-            }`}
+            className={`fw-bold cursor-pointer d-flex align-items-center gap-2 ${cicloCobranca === "ANUAL" ? "text-dark" : "text-muted"
+              }`}
             onClick={() => setCicloCobranca("ANUAL")}
             role="button"
           >
@@ -216,11 +168,10 @@ export function PlanosMedico() {
             cicloCobranca === "MENSAL" ? plano.precoMensal : plano.precoAnual;
 
           return (
-            <div key={plano.id} className="col-12 col-md-6 col-lg-4">
+            <div key={plano.id} className="col-12 col-md-8 col-lg-6 col-xl-5">
               <div
-                className={`card h-100 border-0 shadow-sm position-relative ${
-                  plano.destaque ? "pricing-card-featured" : "pricing-card-standard"
-                }`}
+                className={`card h-100 border-0 shadow-sm position-relative ${plano.destaque ? "pricing-card-featured" : "pricing-card-standard"
+                  }`}
                 style={{
                   borderRadius: "18px",
                   transition: "all 0.3s ease",
@@ -316,11 +267,10 @@ export function PlanosMedico() {
 
                   {/* BOTÃO DE AÇÃO */}
                   <button
-                    className={`btn btn-lg w-100 fw-bold py-3 shadow-sm ${
-                      plano.destaque
+                    className={`btn btn-lg w-100 fw-bold py-3 shadow-sm ${plano.destaque
                         ? "btn-primary"
                         : "btn-outline-secondary"
-                    }`}
+                      }`}
                     style={{ borderRadius: "12px" }}
                     onClick={() => handleAssinar(plano)}
                   >

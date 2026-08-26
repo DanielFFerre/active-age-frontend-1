@@ -47,7 +47,7 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
     medicoEmail: "carlos.silva@exemplo.com",
     medicoTelefone: "(11) 98765-4321",
     planoId: "plano-pro",
-    planoNome: "Plano Profissional / Pro",
+    planoNome: "Plano Profissional Pro",
     ciclo: "MENSAL",
     valor: 199.0,
     status: "ATIVA",
@@ -94,10 +94,10 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
     medicoCrm: "654321/RJ",
     medicoEmail: "mariana.albuquerque@exemplo.com",
     medicoTelefone: "(21) 99887-1122",
-    planoId: "plano-clinica",
-    planoNome: "Plano Clínica / Premium",
+    planoId: "plano-pro",
+    planoNome: "Plano Profissional Pro",
     ciclo: "ANUAL",
-    valor: 279.0,
+    valor: 159.0,
     status: "ATIVA",
     dataInicio: "10/01/2026",
     proximaCobranca: "10/01/2027",
@@ -108,7 +108,7 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
         competencia: "Anual 2026 / 2027",
         dataEmissao: "10/01/2026",
         dataPagamento: "10/01/2026 16:45",
-        valor: 3348.0,
+        valor: 1908.0,
         status: "PAGA",
         metodo: "PIX",
         codigoTransacao: "PIX-12348765",
@@ -122,10 +122,10 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
     medicoCrm: "789012/MG",
     medicoEmail: "roberto.mendes@exemplo.com",
     medicoTelefone: "(31) 97654-3210",
-    planoId: "plano-start",
-    planoNome: "Plano Básico / Start",
+    planoId: "plano-pro",
+    planoNome: "Plano Profissional Pro",
     ciclo: "MENSAL",
-    valor: 99.0,
+    valor: 199.0,
     status: "PENDENTE",
     dataInicio: "01/08/2026",
     proximaCobranca: "01/09/2026",
@@ -135,7 +135,7 @@ const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
         id: "FAT-2026-0803",
         competencia: "Agosto / 2026",
         dataEmissao: "01/08/2026",
-        valor: 99.0,
+        valor: 199.0,
         status: "PENDENTE",
         metodo: "Boleto Bancário",
         codigoTransacao: "BOL-98712345",
@@ -758,9 +758,7 @@ export function ExtratoAssinaturas() {
                   onChange={(e) => setFiltroPlano(e.target.value)}
                 >
                   <option value="">Todos os Planos</option>
-                  <option value="plano-start">Plano Start</option>
-                  <option value="plano-pro">Plano Profissional</option>
-                  <option value="plano-clinica">Plano Clínica</option>
+                  <option value="plano-pro">Plano Profissional Pro</option>
                 </select>
               </div>
 
