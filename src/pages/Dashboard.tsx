@@ -90,7 +90,7 @@ export function Dashboard() {
   };
 
   const scroll = (
-    ref: React.RefObject<HTMLDivElement>,
+    ref: React.RefObject<HTMLDivElement | null>,
     direction: "left" | "right",
   ) => {
     if (ref.current) {
