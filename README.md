@@ -66,42 +66,6 @@ O **Active Age** é uma solução de saúde digital desenvolvida com foco na ace
 - **Alertas e Notificações:** [SweetAlert2](https://sweetalert2.github.io/)
 - **HTTP Client:** [Axios](https://axios-http.com/)
 
----
-
-## 🚀 Como Executar o Projeto Localmente
-
-### Pré-requisitos
-- [Node.js](https://nodejs.org/) (versão 18 ou superior)
-- Gerenciador de pacotes `npm` ou `yarn`
-
-### Passo a Passo
-
-1. **Clone o repositório:**
-   ```bash
-   git clone https://github.com/SEU-USUARIO/active-age-frontend.git
-   ```
-
-2. **Acesse a pasta do projeto:**
-   ```bash
-   cd active-age-frontend
-   ```
-
-3. **Instale as dependências:**
-   ```bash
-   npm install
-   ```
-
-4. **Inicie o servidor de desenvolvimento:**
-   ```bash
-   npm run dev
-   ```
-
-5. **Abra no seu navegador:**
-   ```
-   http://localhost:5173
-   ```
-
----
 
 ## 📁 Estrutura de Pastas
 
