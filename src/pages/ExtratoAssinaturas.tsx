@@ -3,9 +3,6 @@ import { Link, useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
 import { ModalPagamentoMercadoPago } from "../components/pagamento/ModalPagamentoMercadoPago";
 
-// =========================================================================
-// 📋 INTERFACES DE DADOS PARA O EXTRATO DE ASSINATURA
-// =========================================================================
 export interface Fatura {
   id: string;
   competencia: string;
@@ -35,123 +32,10 @@ export interface AssinaturaMedico {
   faturas: Fatura[];
 }
 
-// =========================================================================
-// 💼 DADOS DE IDENTIFICAÇÃO / MOCK (FÁCIL DE EDITAR OU INTEGRAR COM API)
-// =========================================================================
-const ASSINATURAS_INICIAIS: AssinaturaMedico[] = [
-  {
-    id: "sub-1001",
-    medicoId: "med-1",
-    medicoNome: "Dr. Carlos Eduardo Silva",
-    medicoCrm: "123456/SP",
-    medicoEmail: "carlos.silva@exemplo.com",
-    medicoTelefone: "(11) 98765-4321",
-    planoId: "plano-pro",
-    planoNome: "Plano Profissional Pro",
-    ciclo: "MENSAL",
-    valor: 199.0,
-    status: "ATIVA",
-    dataInicio: "15/03/2026",
-    proximaCobranca: "15/09/2026",
-    formaPagamento: "Cartão de Crédito Mastercard •••• 4242",
-    faturas: [
-      {
-        id: "FAT-2026-0801",
-        competencia: "Agosto / 2026",
-        dataEmissao: "15/08/2026",
-        dataPagamento: "15/08/2026 10:32",
-        valor: 199.0,
-        status: "PAGA",
-        metodo: "Cartão de Crédito",
-        codigoTransacao: "TX-99881122",
-      },
-      {
-        id: "FAT-2026-0701",
-        competencia: "Julho / 2026",
-        dataEmissao: "15/07/2026",
-        dataPagamento: "15/07/2026 09:15",
-        valor: 199.0,
-        status: "PAGA",
-        metodo: "Cartão de Crédito",
-        codigoTransacao: "TX-77665544",
-      },
-      {
-        id: "FAT-2026-0601",
-        competencia: "Junho / 2026",
-        dataEmissao: "15/06/2026",
-        dataPagamento: "15/06/2026 14:02",
-        valor: 199.0,
-        status: "PAGA",
-        metodo: "Cartão de Crédito",
-        codigoTransacao: "TX-55443322",
-      },
-    ],
-  },
-  {
-    id: "sub-1002",
-    medicoId: "med-2",
-    medicoNome: "Dra. Mariana Albuquerque",
-    medicoCrm: "654321/RJ",
-    medicoEmail: "mariana.albuquerque@exemplo.com",
-    medicoTelefone: "(21) 99887-1122",
-    planoId: "plano-pro",
-    planoNome: "Plano Profissional Pro",
-    ciclo: "ANUAL",
-    valor: 159.0,
-    status: "ATIVA",
-    dataInicio: "10/01/2026",
-    proximaCobranca: "10/01/2027",
-    formaPagamento: "PIX Automático",
-    faturas: [
-      {
-        id: "FAT-2026-0102",
-        competencia: "Anual 2026 / 2027",
-        dataEmissao: "10/01/2026",
-        dataPagamento: "10/01/2026 16:45",
-        valor: 1908.0,
-        status: "PAGA",
-        metodo: "PIX",
-        codigoTransacao: "PIX-12348765",
-      },
-    ],
-  },
-  {
-    id: "sub-1003",
-    medicoId: "med-3",
-    medicoNome: "Dr. Roberto Mendes",
-    medicoCrm: "789012/MG",
-    medicoEmail: "roberto.mendes@exemplo.com",
-    medicoTelefone: "(31) 97654-3210",
-    planoId: "plano-pro",
-    planoNome: "Plano Profissional Pro",
-    ciclo: "MENSAL",
-    valor: 199.0,
-    status: "PENDENTE",
-    dataInicio: "01/08/2026",
-    proximaCobranca: "01/09/2026",
-    formaPagamento: "Boleto Bancário",
-    faturas: [
-      {
-        id: "FAT-2026-0803",
-        competencia: "Agosto / 2026",
-        dataEmissao: "01/08/2026",
-        valor: 199.0,
-        status: "PENDENTE",
-        metodo: "Boleto Bancário",
-        codigoTransacao: "BOL-98712345",
-      },
-    ],
-  },
-];
-
 export function ExtratoAssinaturas() {
   const navigate = useNavigate();
   const [usuarioLogado, setUsuarioLogado] = useState<any>(null);
-  const [listaAssinaturas, setListaAssinaturas] =
-    useState<AssinaturaMedico[]>(ASSINATURAS_INICIAIS);
-  const [termoBusca, setTermoBusca] = useState("");
-  const [filtroStatus, setFiltroStatus] = useState("");
-  const [filtroPlano, setFiltroPlano] = useState("");
+  const [listaAssinaturas, setListaAssinaturas] = useState<AssinaturaMedico[]>([]);
 
   // Modal de Detalhes da Fatura / Comprovante
   const [faturaVisualizada, setFaturaVisualizada] = useState<{
@@ -164,10 +48,6 @@ export function ExtratoAssinaturas() {
   // Modal de Pagamento Mercado Pago
   const [faturaParaPagar, setFaturaParaPagar] = useState<Fatura | null>(null);
 
-  // Modal de Extrato Completo de um Médico específico (para o Admin)
-  const [medicoExtratoModal, setMedicoExtratoModal] =
-    useState<AssinaturaMedico | null>(null);
-
   useEffect(() => {
     const userStr = localStorage.getItem("activeAgeUser");
     if (!userStr) {
@@ -177,163 +57,36 @@ export function ExtratoAssinaturas() {
     const user = JSON.parse(userStr);
     setUsuarioLogado(user);
 
-    // Se for médico e tiver registro salvo ou logado, sincroniza
+    // Carregar assinaturas reais salvas no localStorage
     const assinaturasSalvas = localStorage.getItem("activeAgeAssinaturas");
     if (assinaturasSalvas) {
       try {
-        setListaAssinaturas(JSON.parse(assinaturasSalvas));
+        const parsed = JSON.parse(assinaturasSalvas);
+        // Remove quaisquer dados de teste mockados (sub-1001, sub-meu-perfil, faturas fakes)
+        const reais = Array.isArray(parsed)
+          ? parsed.filter(
+              (ass: AssinaturaMedico) =>
+                !ass.id.startsWith("sub-100") && ass.id !== "sub-meu-perfil"
+            )
+          : [];
+        setListaAssinaturas(reais);
+        localStorage.setItem("activeAgeAssinaturas", JSON.stringify(reais));
       } catch (e) {
         console.error(e);
       }
     }
   }, [navigate]);
 
-  const isAdmin = usuarioLogado?.tipo === "ADMIN";
-  const isMedico = usuarioLogado?.tipo === "MEDICO";
-
-  // Identificar a assinatura do médico atualmente logado
+  // Identificar a assinatura real do médico atualmente logado
   const minhaAssinatura = useMemo(() => {
     if (!usuarioLogado) return null;
     const encontrada = listaAssinaturas.find(
       (a) =>
         a.medicoId === usuarioLogado.id ||
-        a.medicoEmail === usuarioLogado.email,
+        a.medicoEmail === usuarioLogado.email
     );
-    if (encontrada) return encontrada;
-
-    // Se o médico estiver logado mas ainda não constar na lista mock, cria uma assinatura padrão
-    return {
-      id: "sub-meu-perfil",
-      medicoId: usuarioLogado.id,
-      medicoNome: usuarioLogado.nome,
-      medicoCrm: usuarioLogado.crm || "Pendente",
-      medicoEmail: usuarioLogado.email,
-      planoId: "plano-pro",
-      planoNome: "Plano Profissional / Pro",
-      ciclo: "MENSAL" as const,
-      valor: 199.0,
-      status: "ATIVA" as const,
-      dataInicio: "18/08/2026",
-      proximaCobranca: "18/09/2026",
-      formaPagamento: "Cartão de Crédito •••• 5544",
-      faturas: [
-        {
-          id: "FAT-2026-0818",
-          competencia: "Agosto / 2026",
-          dataEmissao: "18/08/2026",
-          dataPagamento: "18/08/2026 10:15",
-          valor: 199.0,
-          status: "PAGA" as const,
-          metodo: "Cartão de Crédito",
-          codigoTransacao: "TX-AUT-102938",
-        },
-      ],
-    };
+    return encontrada || null;
   }, [usuarioLogado, listaAssinaturas]);
-
-  // Filtros da visualização do Admin
-  const assinaturasFiltradasAdmin = useMemo(() => {
-    return listaAssinaturas.filter((item) => {
-      if (termoBusca.trim()) {
-        const termo = termoBusca.toLowerCase().trim();
-        const matchNome = item.medicoNome.toLowerCase().includes(termo);
-        const matchCrm = item.medicoCrm.toLowerCase().includes(termo);
-        const matchEmail = item.medicoEmail.toLowerCase().includes(termo);
-        if (!matchNome && !matchCrm && !matchEmail) return false;
-      }
-      if (filtroStatus && item.status !== filtroStatus) {
-        return false;
-      }
-      if (filtroPlano && item.planoId !== filtroPlano) {
-        return false;
-      }
-      return true;
-    });
-  }, [listaAssinaturas, termoBusca, filtroStatus, filtroPlano]);
-
-  // KPIs para o Admin
-  const statsAdmin = useMemo(() => {
-    let mrr = 0;
-    let ativas = 0;
-    let pendentes = 0;
-
-    listaAssinaturas.forEach((a) => {
-      if (a.status === "ATIVA") {
-        mrr += a.valor;
-        ativas++;
-      } else if (a.status === "PENDENTE" || a.status === "ATRASADA") {
-        pendentes++;
-      }
-    });
-
-    return {
-      mrr,
-      ativas,
-      pendentes,
-      total: listaAssinaturas.length,
-    };
-  }, [listaAssinaturas]);
-
-  const handleCancelarAssinatura = () => {
-    Swal.fire({
-      title: "Deseja cancelar sua assinatura?",
-      text: "Seu consultório virtual continuará ativo até o final do período vigente atual.",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#6c757d",
-      confirmButtonText: "Sim, cancelar",
-      cancelButtonText: "Manter Plano",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        Swal.fire({
-          icon: "info",
-          title: "Assinatura Cancelada",
-          text: "O cancelamento foi agendado para o fim do período vigente.",
-          confirmButtonColor: "var(--aa-brown)",
-        });
-      }
-    });
-  };
-
-  const handleSimularPagamentoAdmin = (medicoId: string, faturaId: string) => {
-    const atualizadas = listaAssinaturas.map((a) => {
-      if (a.medicoId === medicoId) {
-        return {
-          ...a,
-          status: "ATIVA" as const,
-          faturas: a.faturas.map((f) =>
-            f.id === faturaId
-              ? {
-                  ...f,
-                  status: "PAGA" as const,
-                  dataPagamento: new Date().toLocaleString("pt-BR"),
-                }
-              : f,
-          ),
-        };
-      }
-      return a;
-    });
-
-    setListaAssinaturas(atualizadas);
-    localStorage.setItem("activeAgeAssinaturas", JSON.stringify(atualizadas));
-
-    if (medicoExtratoModal?.medicoId === medicoId) {
-      setMedicoExtratoModal(
-        atualizadas.find((a) => a.medicoId === medicoId) || null,
-      );
-    }
-
-    Swal.fire({
-      toast: true,
-      position: "top-end",
-      icon: "success",
-      title: "Fatura marcada como Paga!",
-      showConfirmButton: false,
-      timer: 2000,
-    });
-  };
 
   const renderBadgeStatusAssinatura = (status: string) => {
     switch (status) {
@@ -420,18 +173,14 @@ export function ExtratoAssinaturas() {
         <div>
           <div className="d-flex align-items-center gap-2 mb-1">
             <span className="badge bg-dark text-white rounded-pill px-3 py-1 small">
-              {isAdmin ? "PAINEL ADMINISTRATIVO" : "CONSULTÓRIO VIRTUAL"}
+              CONSULTÓRIO VIRTUAL
             </span>
           </div>
-          <h1 className="fw-bold mb-1" style={{ color: "var(--aa-brown)" }}>
-            {isAdmin
-              ? "Gestão e Extrato de Assinaturas dos Médicos"
-              : "Extrato e Histórico da Minha Assinatura"}
+          <h1 className="fw-bold mb-1 text-dark">
+            Extrato e Histórico da Minha Assinatura
           </h1>
           <p className="text-muted mb-0">
-            {isAdmin
-              ? "Acompanhe a situação financeira, planos ativos e histórico de pagamentos de cada profissional."
-              : "Visualize os dados do seu plano atual, próximas cobranças e histórico de faturas do seu consultório."}
+            Visualize os dados do seu plano atual, próximas cobranças e histórico de faturas do seu consultório.
           </p>
         </div>
 
@@ -445,29 +194,55 @@ export function ExtratoAssinaturas() {
         </div>
       </div>
 
-      {/* ========================================================
-          VISÃO DO MÉDICO (MEU EXTRATO)
-          ======================================================== */}
-      {(!isAdmin || isMedico) && minhaAssinatura && (
+      {/* CASO O MÉDICO NÃO TENHA PLANO CONTRATADO */}
+      {!minhaAssinatura ? (
+        <div className="card shadow-sm border-0 rounded-4 p-5 text-center bg-white my-4">
+          <div
+            className="mx-auto mb-3 d-flex align-items-center justify-content-center rounded-circle"
+            style={{
+              width: "80px",
+              height: "80px",
+              backgroundColor: "rgba(232, 101, 66, 0.12)",
+              color: "var(--aa-orange)",
+            }}
+          >
+            <i className="bi bi-rocket-takeoff fs-1"></i>
+          </div>
+          <h3 className="fw-bold mb-2 text-dark">
+            Você ainda não possui uma assinatura ativa
+          </h3>
+          <p className="text-muted mx-auto mb-4" style={{ maxWidth: "600px" }}>
+            Escolha um dos planos para o seu Consultório Virtual Active Age para começar a atender pacientes online, emitir receitas e gerenciar sua agenda.
+          </p>
+          <div>
+            <Link
+              to="/planos-medico"
+              className="btn btn-primary btn-lg px-4 shadow-sm fw-bold"
+            >
+              <i className="bi bi-check-circle me-2"></i> Conhecer os Planos Disponíveis
+            </Link>
+          </div>
+        </div>
+      ) : (
         <div>
           {/* CARD DO PLANO ATUAL DO MÉDICO */}
           <div className="card shadow-sm border-0 rounded-4 mb-4 overflow-hidden">
             <div
-              className="card-header p-4 text-white d-flex justify-content-between align-items-center flex-wrap gap-3"
-              style={{ backgroundColor: "var(--aa-brown)" }}
+              className="card-header p-4 text-dark d-flex justify-content-between align-items-center flex-wrap gap-3"
+              style={{ backgroundColor: "var(--aa-green)" }}
             >
               <div>
                 <span className="badge bg-warning text-dark px-3 py-1 rounded-pill fw-bold mb-2">
                   PLANO ATIVO
                 </span>
-                <h3 className="fw-bold mb-0 text-white">
+                <h3 className="fw-bold mb-0 text-dark">
                   {minhaAssinatura.planoNome}
                 </h3>
               </div>
 
               <div className="d-flex align-items-center gap-3">
                 <div className="text-end">
-                  <span className="text-white-50 small d-block">
+                  <span className="text-dark small d-block fw-semibold" style={{ opacity: 0.85 }}>
                     VALOR DA ASSINATURA
                   </span>
                   <span
@@ -476,7 +251,7 @@ export function ExtratoAssinaturas() {
                   >
                     R$ {minhaAssinatura.valor.toFixed(2)}
                   </span>
-                  <span className="text-white-50">
+                  <span className="text-dark fw-semibold" style={{ opacity: 0.85 }}>
                     /{minhaAssinatura.ciclo === "MENSAL" ? "mês" : "ano"}
                   </span>
                 </div>
@@ -485,7 +260,7 @@ export function ExtratoAssinaturas() {
 
             <div className="card-body p-4 bg-white">
               <div className="row g-4 align-items-center">
-                <div className="col-12 col-md-4 border-end-md">
+                <div className="col-12 col-md-6 border-end-md">
                   <span className="text-muted small fw-bold d-block text-uppercase mb-1">
                     Status da Assinatura:
                   </span>
@@ -497,7 +272,7 @@ export function ExtratoAssinaturas() {
                   </small>
                 </div>
 
-                <div className="col-12 col-md-4 border-end-md">
+                <div className="col-12 col-md-6">
                   <span className="text-muted small fw-bold d-block text-uppercase mb-1">
                     Próxima Cobrança:
                   </span>
@@ -512,23 +287,6 @@ export function ExtratoAssinaturas() {
                     Renovação automática no {minhaAssinatura.formaPagamento}
                   </small>
                 </div>
-
-                <div className="col-12 col-md-4 text-md-end">
-                  <div className="d-flex flex-column flex-md-row justify-content-md-end gap-2">
-                    <Link
-                      to="/planos-medico"
-                      className="btn btn-outline-secondary fw-bold"
-                    >
-                      <i className="bi bi-arrow-repeat me-1"></i> Alterar Plano
-                    </Link>
-                    <button
-                      className="btn btn-outline-danger"
-                      onClick={handleCancelarAssinatura}
-                    >
-                      Cancelar
-                    </button>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -536,8 +294,8 @@ export function ExtratoAssinaturas() {
           {/* TABELA DE HISTÓRICO DE FATURAS DO MÉDICO */}
           <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
             <div className="card-header bg-light p-3 d-flex justify-content-between align-items-center">
-              <h5 className="fw-bold mb-0" style={{ color: "var(--aa-brown)" }}>
-                <i className="bi bi-receipt me-2"></i>Histórico de Faturas e
+              <h5 className="fw-bold mb-0 text-dark">
+                <i className="bi bi-receipt me-2 text-success"></i>Histórico de Faturas e
                 Comprovantes
               </h5>
               <span className="text-muted small">
@@ -563,303 +321,62 @@ export function ExtratoAssinaturas() {
                   </tr>
                 </thead>
                 <tbody>
-                  {minhaAssinatura.faturas.map((fatura) => (
-                    <tr key={fatura.id}>
-                      <td className="ps-4 fw-bold font-monospace text-dark">
-                        {fatura.id}
-                      </td>
-                      <td>{fatura.competencia}</td>
-                      <td>
-                        <span className="small text-muted">
-                          {fatura.dataPagamento || "Aguardando pagamento"}
-                        </span>
-                      </td>
-                      <td>
-                        <i className="bi bi-credit-card me-1 text-muted"></i>
-                        {fatura.metodo}
-                      </td>
-                      <td className="fw-bold text-dark">
-                        R$ {fatura.valor.toFixed(2)}
-                      </td>
-                      <td>{renderBadgeStatusFatura(fatura.status)}</td>
-                      <td className="text-end pe-4">
-                        {fatura.status !== "PAGA" && (
-                          <button
-                            className="btn btn-sm btn-primary fw-bold me-1 shadow-sm"
-                            onClick={() => setFaturaParaPagar(fatura)}
-                            title="Pagar Fatura com Mercado Pago"
-                          >
-                            <i className="bi bi-wallet2 me-1"></i> Pagar
-                          </button>
-                        )}
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() =>
-                            setFaturaVisualizada({
-                              fatura,
-                              medicoNome: minhaAssinatura.medicoNome,
-                              medicoCrm: minhaAssinatura.medicoCrm,
-                              planoNome: minhaAssinatura.planoNome,
-                            })
-                          }
-                          title="Visualizar Comprovante / Recibo"
-                        >
-                          <i className="bi bi-file-earmark-text me-1"></i>{" "}
-                          Recibo
-                        </button>
+                  {minhaAssinatura.faturas.length === 0 ? (
+                    <tr>
+                      <td colSpan={7} className="text-center py-5 text-muted">
+                        <i className="bi bi-inbox fs-2 d-block mb-2 text-secondary"></i>
+                        Nenhuma fatura encontrada até o momento.
                       </td>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* ========================================================
-          VISÃO DO ADMINISTRADOR (PAINEL GERAL DE ASSINANTES)
-          ======================================================== */}
-      {isAdmin && (
-        <div className="mt-4">
-          {/* CARDS DE KPIS DO ADMIN */}
-          <div className="row g-3 mb-4">
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="admin-stat-card stat-total p-3">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span className="text-muted fw-semibold small text-uppercase">
-                      Receita Mensal (MRR)
-                    </span>
-                    <h3
-                      className="fw-bold my-1"
-                      style={{ color: "var(--aa-orange)" }}
-                    >
-                      R$ {statsAdmin.mrr.toFixed(2)}
-                    </h3>
-                    <small className="text-muted">
-                      Assinaturas recorrentes
-                    </small>
-                  </div>
-                  <div className="admin-stat-icon icon-total">
-                    <i className="bi bi-cash-stack"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="admin-stat-card stat-approved p-3">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span className="text-muted fw-semibold small text-uppercase">
-                      Assinaturas Ativas
-                    </span>
-                    <h3
-                      className="fw-bold my-1"
-                      style={{ color: "var(--aa-green)" }}
-                    >
-                      {statsAdmin.ativas}
-                    </h3>
-                    <small className="text-muted">Médicos em dia</small>
-                  </div>
-                  <div className="admin-stat-icon icon-approved">
-                    <i className="bi bi-check-circle-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div className="admin-stat-card stat-pending p-3">
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span className="text-muted fw-semibold small text-uppercase">
-                      Pendentes / Atrasadas
-                    </span>
-                    <h3
-                      className="fw-bold my-1"
-                      style={{ color: "var(--aa-orange)" }}
-                    >
-                      {statsAdmin.pendentes}
-                    </h3>
-                    <small className="text-muted">Aguardando confirmação</small>
-                  </div>
-                  <div className="admin-stat-icon icon-pending">
-                    <i className="bi bi-clock-history"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div className="col-12 col-sm-6 col-lg-3">
-              <div
-                className="admin-stat-card stat-total p-3"
-                style={{ borderLeftColor: "var(--aa-orange)" }}
-              >
-                <div className="d-flex justify-content-between align-items-center">
-                  <div>
-                    <span className="text-muted fw-semibold small text-uppercase">
-                      Total de Médicos
-                    </span>
-                    <h3
-                      className="fw-bold my-1"
-                      style={{ color: "var(--aa-orange)" }}
-                    >
-                      {statsAdmin.total}
-                    </h3>
-                    <small className="text-muted">Cadastros monitorados</small>
-                  </div>
-                  <div
-                    className="admin-stat-icon"
-                    style={{
-                      backgroundColor: "rgba(232, 101, 66, 0.12)",
-                      color: "var(--aa-orange)",
-                    }}
-                  >
-                    <i className="bi bi-person-badge-fill"></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          {/* BARRA DE FILTRO DO ADMIN */}
-          <div className="admin-filter-bar mb-4">
-            <div className="row g-2 align-items-center">
-              <div className="col-12 col-md-5">
-                <div className="input-group">
-                  <span className="input-group-text bg-white border-end-0 text-muted">
-                    <i className="bi bi-search"></i>
-                  </span>
-                  <input
-                    type="text"
-                    className="form-control border-start-0 ps-0"
-                    placeholder="Buscar médico por nome, CRM ou e-mail..."
-                    value={termoBusca}
-                    onChange={(e) => setTermoBusca(e.target.value)}
-                  />
-                  {termoBusca && (
-                    <button
-                      className="btn btn-outline-secondary border-start-0"
-                      type="button"
-                      onClick={() => setTermoBusca("")}
-                    >
-                      <i className="bi bi-x"></i>
-                    </button>
-                  )}
-                </div>
-              </div>
-
-              <div className="col-6 col-md-3">
-                <select
-                  className="form-select"
-                  value={filtroPlano}
-                  onChange={(e) => setFiltroPlano(e.target.value)}
-                >
-                  <option value="">Todos os Planos</option>
-                  <option value="plano-pro">Plano Profissional Pro</option>
-                </select>
-              </div>
-
-              <div className="col-6 col-md-2">
-                <select
-                  className="form-select"
-                  value={filtroStatus}
-                  onChange={(e) => setFiltroStatus(e.target.value)}
-                >
-                  <option value="">Todos os Status</option>
-                  <option value="ATIVA">Ativa</option>
-                  <option value="PENDENTE">Pendente</option>
-                  <option value="ATRASADA">Atrasada</option>
-                  <option value="CANCELADA">Cancelada</option>
-                </select>
-              </div>
-
-              <div className="col-12 col-md-2 text-md-end">
-                <button
-                  className="btn btn-outline-secondary w-100"
-                  onClick={() => {
-                    setTermoBusca("");
-                    setFiltroPlano("");
-                    setFiltroStatus("");
-                  }}
-                >
-                  Limpar
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* TABELA DE TODOS OS MÉDICOS E SUAS ASSINATURAS */}
-          <div className="card shadow-sm border-0 rounded-4 overflow-hidden">
-            <div className="table-responsive">
-              <table className="table table-hover align-middle mb-0">
-                <thead className="table-light">
-                  <tr>
-                    <th scope="col" className="ps-4">
-                      Médico
-                    </th>
-                    <th scope="col">CRM</th>
-                    <th scope="col">Plano Assinado</th>
-                    <th scope="col">Valor / Ciclo</th>
-                    <th scope="col">Status</th>
-                    <th scope="col">Próxima Cobrança</th>
-                    <th scope="col" className="text-end pe-4">
-                      Extrato & Ações
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {assinaturasFiltradasAdmin.map((item) => (
-                    <tr key={item.id}>
-                      <td className="ps-4">
-                        <div>
-                          <span className="fw-bold d-block text-dark">
-                            {item.medicoNome}
+                  ) : (
+                    minhaAssinatura.faturas.map((fatura) => (
+                      <tr key={fatura.id}>
+                        <td className="ps-4 fw-bold font-monospace text-dark">
+                          {fatura.id}
+                        </td>
+                        <td>{fatura.competencia}</td>
+                        <td>
+                          <span className="small text-muted">
+                            {fatura.dataPagamento || "Aguardando pagamento"}
                           </span>
-                          <small className="text-muted">
-                            {item.medicoEmail}
-                          </small>
-                        </div>
-                      </td>
-                      <td>
-                        <span className="crm-badge-pill">{item.medicoCrm}</span>
-                      </td>
-                      <td>
-                        <span className="badge bg-light text-dark border">
-                          {item.planoNome}
-                        </span>
-                      </td>
-                      <td>
-                        <span
-                          className="fw-bold"
-                          style={{ color: "var(--aa-orange)" }}
-                        >
-                          R$ {item.valor.toFixed(2)}
-                        </span>
-                        <span className="text-muted small">
-                          /{item.ciclo === "MENSAL" ? "mês" : "ano"}
-                        </span>
-                      </td>
-                      <td>{renderBadgeStatusAssinatura(item.status)}</td>
-                      <td>
-                        <span className="small text-muted">
-                          {item.proximaCobranca}
-                        </span>
-                      </td>
-                      <td className="text-end pe-4">
-                        <button
-                          className="btn btn-sm btn-outline-secondary"
-                          onClick={() => setMedicoExtratoModal(item)}
-                          title="Ver Extrato e Faturas do Médico"
-                        >
-                          <i className="bi bi-clock-history me-1"></i> Ver
-                          Extrato ({item.faturas.length})
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                        </td>
+                        <td>
+                          <i className="bi bi-credit-card me-1 text-muted"></i>
+                          {fatura.metodo}
+                        </td>
+                        <td className="fw-bold text-dark">
+                          R$ {fatura.valor.toFixed(2)}
+                        </td>
+                        <td>{renderBadgeStatusFatura(fatura.status)}</td>
+                        <td className="text-end pe-4">
+                          {fatura.status !== "PAGA" && (
+                            <button
+                              className="btn btn-sm btn-primary fw-bold me-1 shadow-sm"
+                              onClick={() => setFaturaParaPagar(fatura)}
+                              title="Pagar Fatura com Mercado Pago"
+                            >
+                              <i className="bi bi-wallet2 me-1"></i> Pagar
+                            </button>
+                          )}
+                          <button
+                            className="btn btn-sm btn-outline-secondary"
+                            onClick={() =>
+                              setFaturaVisualizada({
+                                fatura,
+                                medicoNome: minhaAssinatura.medicoNome,
+                                medicoCrm: minhaAssinatura.medicoCrm,
+                                planoNome: minhaAssinatura.planoNome,
+                              })
+                            }
+                            title="Visualizar Comprovante / Recibo"
+                          >
+                            <i className="bi bi-file-earmark-text me-1"></i>{" "}
+                            Recibo
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -867,9 +384,7 @@ export function ExtratoAssinaturas() {
         </div>
       )}
 
-      {/* ========================================================
-          MODAL: COMPROVANTE / RECIBO DE FATURA
-          ======================================================== */}
+      {/* MODAL: COMPROVANTE / RECIBO DE FATURA */}
       {faturaVisualizada && (
         <div
           className="modal fade show d-block"
@@ -883,7 +398,7 @@ export function ExtratoAssinaturas() {
             <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
               <div
                 className="modal-header text-white p-3"
-                style={{ backgroundColor: "var(--aa-brown)" }}
+                style={{ backgroundColor: "var(--aa-green)" }}
               >
                 <h5 className="modal-title fw-bold">
                   <i className="bi bi-receipt-cutoff me-2"></i> Recibo de
@@ -905,8 +420,7 @@ export function ExtratoAssinaturas() {
                     className="mx-auto mb-2"
                   />
                   <h6
-                    className="fw-bold mb-0"
-                    style={{ color: "var(--aa-brown)" }}
+                    className="fw-bold mb-0 text-dark"
                   >
                     Active Age Consultório Virtual
                   </h6>
@@ -984,163 +498,6 @@ export function ExtratoAssinaturas() {
         </div>
       )}
 
-      {/* ========================================================
-          MODAL: EXTRATO COMPLETO DE UM MÉDICO (PARA O ADMIN)
-          ======================================================== */}
-      {medicoExtratoModal && (
-        <div
-          className="modal fade show d-block"
-          tabIndex={-1}
-          style={{
-            backgroundColor: "rgba(0, 0, 0, 0.55)",
-            backdropFilter: "blur(4px)",
-          }}
-        >
-          <div className="modal-dialog modal-dialog-centered modal-lg">
-            <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-              <div
-                className="modal-header text-white p-4"
-                style={{ backgroundColor: "var(--aa-brown)" }}
-              >
-                <div>
-                  <h5 className="modal-title fw-bold mb-1">
-                    <i className="bi bi-clock-history me-2"></i>
-                    Extrato de Assinatura: {medicoExtratoModal.medicoNome}
-                  </h5>
-                  <span className="text-white-50 small">
-                    CRM: {medicoExtratoModal.medicoCrm} |{" "}
-                    {medicoExtratoModal.medicoEmail}
-                  </span>
-                </div>
-                <button
-                  type="button"
-                  className="btn-close btn-close-white"
-                  onClick={() => setMedicoExtratoModal(null)}
-                ></button>
-              </div>
-
-              <div className="modal-body p-4">
-                <div className="row g-3 mb-4">
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">
-                        Plano Atual
-                      </small>
-                      <strong className="fs-6">
-                        {medicoExtratoModal.planoNome}
-                      </strong>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">
-                        Valor / Ciclo
-                      </small>
-                      <strong className="fs-6 text-dark">
-                        R$ {medicoExtratoModal.valor.toFixed(2)} (
-                        {medicoExtratoModal.ciclo})
-                      </strong>
-                    </div>
-                  </div>
-                  <div className="col-md-4">
-                    <div className="p-3 bg-light rounded-3">
-                      <small className="text-muted d-block text-uppercase fw-bold">
-                        Status
-                      </small>
-                      <div>
-                        {renderBadgeStatusAssinatura(medicoExtratoModal.status)}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                <h6
-                  className="fw-bold mb-3"
-                  style={{ color: "var(--aa-brown)" }}
-                >
-                  <i className="bi bi-receipt me-2"></i>Faturas e Cobranças
-                  Geradas
-                </h6>
-
-                <div className="table-responsive border rounded-3">
-                  <table className="table table-hover align-middle mb-0">
-                    <thead className="table-light">
-                      <tr>
-                        <th scope="col" className="ps-3">
-                          ID Fatura
-                        </th>
-                        <th scope="col">Competência</th>
-                        <th scope="col">Data</th>
-                        <th scope="col">Valor</th>
-                        <th scope="col">Status</th>
-                        <th scope="col" className="text-end pe-3">
-                          Ações Admin
-                        </th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      {medicoExtratoModal.faturas.map((fat) => (
-                        <tr key={fat.id}>
-                          <td className="ps-3 font-monospace small">
-                            {fat.id}
-                          </td>
-                          <td>{fat.competencia}</td>
-                          <td className="small">
-                            {fat.dataPagamento || fat.dataEmissao}
-                          </td>
-                          <td className="fw-bold">R$ {fat.valor.toFixed(2)}</td>
-                          <td>{renderBadgeStatusFatura(fat.status)}</td>
-                          <td className="text-end pe-3">
-                            {fat.status !== "PAGA" ? (
-                              <button
-                                className="btn btn-sm btn-success fw-bold me-1"
-                                onClick={() =>
-                                  handleSimularPagamentoAdmin(
-                                    medicoExtratoModal.medicoId,
-                                    fat.id,
-                                  )
-                                }
-                                title="Confirmar pagamento manualmente"
-                              >
-                                <i className="bi bi-check2"></i> Marcar Paga
-                              </button>
-                            ) : null}
-
-                            <button
-                              className="btn btn-sm btn-outline-secondary"
-                              onClick={() =>
-                                setFaturaVisualizada({
-                                  fatura: fat,
-                                  medicoNome: medicoExtratoModal.medicoNome,
-                                  medicoCrm: medicoExtratoModal.medicoCrm,
-                                  planoNome: medicoExtratoModal.planoNome,
-                                })
-                              }
-                            >
-                              <i className="bi bi-eye"></i> Recibo
-                            </button>
-                          </td>
-                        </tr>
-                      ))}
-                    </tbody>
-                  </table>
-                </div>
-              </div>
-
-              <div className="modal-footer bg-light p-3">
-                <button
-                  type="button"
-                  className="btn btn-outline-secondary"
-                  onClick={() => setMedicoExtratoModal(null)}
-                >
-                  Fechar
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
       {/* MODAL DE PAGAMENTO MERCADO PAGO PARA FATURA PENDENTE */}
       {faturaParaPagar && minhaAssinatura && (
         <ModalPagamentoMercadoPago
@@ -1161,7 +518,7 @@ export function ExtratoAssinaturas() {
                           status: "PAGA" as const,
                           dataPagamento: new Date().toLocaleString("pt-BR"),
                         }
-                      : f,
+                      : f
                   ),
                 };
               }
@@ -1170,7 +527,7 @@ export function ExtratoAssinaturas() {
             setListaAssinaturas(atualizadas);
             localStorage.setItem(
               "activeAgeAssinaturas",
-              JSON.stringify(atualizadas),
+              JSON.stringify(atualizadas)
             );
             Swal.fire({
               icon: "success",

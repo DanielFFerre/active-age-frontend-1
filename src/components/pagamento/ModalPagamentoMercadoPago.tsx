@@ -45,7 +45,7 @@ export function ModalPagamentoMercadoPago({
   const [isProcessando, setIsProcessando] = useState(false);
   const [etapa, setEtapa] = useState<"FORMULARIO" | "PIX_GERADO" | "SUCESSO">("FORMULARIO");
 
-  // Dados do Cartão de Crédito
+
   const [numeroCartao, setNumeroCartao] = useState("");
   const [nomeTitular, setNomeTitular] = useState(paciente?.nome || medico?.nome || "");
   const [validade, setValidade] = useState("");
@@ -54,16 +54,16 @@ export function ModalPagamentoMercadoPago({
   const [parcelas, setParcelas] = useState("1");
   const [bandeiraCartao, setBandeiraCartao] = useState<"visa" | "mastercard" | "elo" | "outro">("mastercard");
 
-  // Dados do Cartão de Débito
+
   const [numeroDebito, setNumeroDebito] = useState("");
   const [nomeDebito, setNomeDebito] = useState(paciente?.nome || medico?.nome || "");
   const [validadeDebito, setValidadeDebito] = useState("");
   const [cvvDebito, setCvvDebito] = useState("");
   const [cpfDebito, setCpfDebito] = useState("");
 
-  // Dados do PIX
+
   const [codigoPixCopiaCola, setCodigoPixCopiaCola] = useState("");
-  const [tempoRestantePix, setTempoRestantePix] = useState(900); // 15 minutos em segundos
+  const [tempoRestantePix, setTempoRestantePix] = useState(900);
   const [transacaoId, setTransacaoId] = useState("");
 
   useEffect(() => {
@@ -77,7 +77,7 @@ export function ModalPagamentoMercadoPago({
     }
   }, [isOpen, plano, paciente, medico]);
 
-  // Contagem regressiva do PIX
+
   useEffect(() => {
     let interval: any = null;
     if (etapa === "PIX_GERADO" && tempoRestantePix > 0) {
@@ -90,14 +90,14 @@ export function ModalPagamentoMercadoPago({
 
   if (!isOpen) return null;
 
-  // Formatador de minutos e segundos
+
   const formatarTempo = (segundos: number) => {
     const min = Math.floor(segundos / 60);
     const seg = segundos % 60;
     return `${min.toString().padStart(2, "0")}:${seg.toString().padStart(2, "0")}`;
   };
 
-  // Detectar bandeira pelo número
+
   const handleNumeroCartaoChange = (val: string) => {
     const limpo = val.replace(/\D/g, "").substring(0, 16);
     const formatado = limpo.replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -136,11 +136,11 @@ export function ModalPagamentoMercadoPago({
     setFn(formatado);
   };
 
-  // Gerar PIX dinâmico
+
   const handleGerarPix = async () => {
     setIsProcessando(true);
     try {
-      // Código PIX padrão BR Code Mercado Pago
+
       const pixPayload = `00020101021226840014br.gov.bcb.pix2562mercadopago.com.br/pix/${transacaoId}520400005303986540${plano.valor.toFixed(
         2
       )}5802BR5910ACTIVE AGE6009SAO PAULO62070503***6304`;
@@ -151,7 +151,6 @@ export function ModalPagamentoMercadoPago({
     }
   };
 
-  // Processar pagamento com Cartão
   const handleProcessarCartao = async (tipo: "CREDITO" | "DEBITO") => {
     if (tipo === "CREDITO") {
       if (numeroCartao.replace(/\D/g, "").length < 16) {
@@ -176,7 +175,7 @@ export function ModalPagamentoMercadoPago({
     setIsProcessando(true);
 
     try {
-      // Conclui com sucesso
+
       finalizarPagamentoSucesso({
         transacaoId,
         metodo: tipo === "CREDITO" ? "Cartão de Crédito" : "Cartão de Débito",
@@ -198,7 +197,7 @@ export function ModalPagamentoMercadoPago({
     setEtapa("SUCESSO");
 
     if (!isConsulta) {
-      // Salvar na memória/localStorage para refletir no Extrato de Assinaturas do Médico
+
       const userStr = localStorage.getItem("activeAgeUser");
       let userNome = medico?.nome || "Médico Titular";
       let userCrm = medico?.crm || "Não informado";
@@ -275,7 +274,7 @@ export function ModalPagamentoMercadoPago({
     >
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content border-0 shadow-lg rounded-4 overflow-hidden">
-          {/* TOPO COM IDENTIDADE VISUAL MERCADO PAGO */}
+
           <div
             className="p-3 text-white d-flex justify-content-between align-items-center"
             style={{ backgroundColor: "#009ee3" }}
@@ -295,9 +294,9 @@ export function ModalPagamentoMercadoPago({
             ></button>
           </div>
 
-          {/* CORPO DO MODAL */}
+
           <div className="modal-body p-4 bg-light">
-            {/* ETAPA: SUCESSO */}
+
             {etapa === "SUCESSO" ? (
               <div className="text-center py-4">
                 <div
@@ -341,7 +340,7 @@ export function ModalPagamentoMercadoPago({
                 </div>
               </div>
             ) : etapa === "PIX_GERADO" ? (
-              /* ETAPA: PIX GERADO */
+
               <div className="text-center py-2">
                 <div className="d-flex align-items-center justify-content-center gap-2 mb-2">
                   <span className="badge bg-success-subtle text-success border border-success-subtle px-3 py-2 rounded-pill fw-bold">
@@ -357,7 +356,7 @@ export function ModalPagamentoMercadoPago({
                   abaixo:
                 </p>
 
-                {/* QR CODE DISPLAY */}
+
                 <div className="bg-white p-3 rounded-4 shadow-sm border d-inline-block mb-3">
                   <img
                     src={urlQrCode}
@@ -372,7 +371,7 @@ export function ModalPagamentoMercadoPago({
                   </div>
                 </div>
 
-                {/* COPIA E COLA */}
+
                 <div className="mb-4 text-start">
                   <label className="form-label fw-bold small text-muted text-uppercase">
                     Ou use o Código PIX Copia e Cola:
@@ -390,7 +389,6 @@ export function ModalPagamentoMercadoPago({
                   </div>
                 </div>
 
-                {/* AÇÃO SIMULADA DE APROVAÇÃO INSTANTÂNEA */}
                 <div className="d-flex justify-content-center gap-2">
                   <button
                     className="btn btn-outline-secondary"
@@ -416,9 +414,9 @@ export function ModalPagamentoMercadoPago({
                 </div>
               </div>
             ) : (
-              /* ETAPA: FORMULÁRIO DE SELEÇÃO DE MÉTODO */
+
               <div className="row g-4">
-                {/* COLUNA ESQUERDA: RESUMO DO PEDIDO */}
+
                 <div className="col-12 col-md-5 order-md-2">
                   <div className="card border-0 shadow-sm rounded-3 p-3 bg-white">
                     <h6 className="fw-bold mb-3" style={{ color: "var(--aa-brown)" }}>
@@ -498,15 +496,14 @@ export function ModalPagamentoMercadoPago({
                   </div>
                 </div>
 
-                {/* COLUNA DIREITA: ABAS E FORMULÁRIO DE PAGAMENTO */}
+
                 <div className="col-12 col-md-7 order-md-1">
-                  {/* TABS DE SELEÇÃO */}
+
                   <div className="d-flex gap-2 p-1 bg-white rounded-3 border mb-3">
                     <button
                       type="button"
-                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${
-                        metodoSelecionado === "PIX" ? "btn-success" : "btn-light text-muted"
-                      }`}
+                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${metodoSelecionado === "PIX" ? "btn-success" : "btn-light text-muted"
+                        }`}
                       onClick={() => setMetodoSelecionado("PIX")}
                     >
                       <i className="bi bi-qr-code"></i> PIX
@@ -514,9 +511,8 @@ export function ModalPagamentoMercadoPago({
 
                     <button
                       type="button"
-                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${
-                        metodoSelecionado === "CREDITO" ? "btn-primary" : "btn-light text-muted"
-                      }`}
+                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${metodoSelecionado === "CREDITO" ? "btn-primary" : "btn-light text-muted"
+                        }`}
                       onClick={() => setMetodoSelecionado("CREDITO")}
                     >
                       <i className="bi bi-credit-card"></i> Crédito
@@ -524,16 +520,15 @@ export function ModalPagamentoMercadoPago({
 
                     <button
                       type="button"
-                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${
-                        metodoSelecionado === "DEBITO" ? "btn-primary" : "btn-light text-muted"
-                      }`}
+                      className={`btn flex-grow-1 fw-bold btn-sm py-2 d-flex align-items-center justify-content-center gap-1 ${metodoSelecionado === "DEBITO" ? "btn-primary" : "btn-light text-muted"
+                        }`}
                       onClick={() => setMetodoSelecionado("DEBITO")}
                     >
                       <i className="bi bi-credit-card-2-front"></i> Débito
                     </button>
                   </div>
 
-                  {/* FORMULÁRIO DO MÉTODO: PIX */}
+
                   {metodoSelecionado === "PIX" && (
                     <div className="card border-0 shadow-sm p-4 bg-white rounded-3 text-center">
                       <div
@@ -574,10 +569,10 @@ export function ModalPagamentoMercadoPago({
                     </div>
                   )}
 
-                  {/* FORMULÁRIO DO MÉTODO: CARTÃO DE CRÉDITO */}
+
                   {metodoSelecionado === "CREDITO" && (
                     <div className="card border-0 shadow-sm p-3 p-md-4 bg-white rounded-3">
-                      {/* PREVIEW DO CARTÃO VIRTUAL */}
+
                       <div
                         className="p-3 text-white rounded-3 mb-3 shadow-sm position-relative overflow-hidden"
                         style={{
@@ -702,7 +697,7 @@ export function ModalPagamentoMercadoPago({
                     </div>
                   )}
 
-                  {/* FORMULÁRIO DO MÉTODO: CARTÃO DE DÉBITO */}
+
                   {metodoSelecionado === "DEBITO" && (
                     <div className="card border-0 shadow-sm p-3 p-md-4 bg-white rounded-3">
                       <div className="mb-3">

@@ -106,7 +106,6 @@ export function PlanosMedico() {
 
   return (
     <main className="container my-5 pb-5 animation-fade-in">
-      {/* CABEÇALHO HERO */}
       <header className="text-center mb-5">
         <div className="d-inline-flex align-items-center gap-2 px-3 py-1 bg-light rounded-pill border mb-3">
           <i className="bi bi-shield-fill-check text-success"></i>
@@ -122,7 +121,6 @@ export function PlanosMedico() {
           tecnologia acessível e faça a gestão completa da sua clínica online.
         </p>
 
-        {/* TOGGLE MENSAL / ANUAL */}
         <div className="d-flex justify-content-center align-items-center gap-3 mt-4">
           <span
             className={`fw-bold cursor-pointer ${cicloCobranca === "MENSAL" ? "text-dark" : "text-muted"
@@ -161,7 +159,6 @@ export function PlanosMedico() {
         </div>
       </header>
 
-      {/* GRADE DE PLANOS / CARDS */}
       <div className="row g-4 justify-content-center align-items-stretch mb-5">
         {PLANOS_DISPONIVEIS.map((plano) => {
           const preco =
@@ -180,7 +177,6 @@ export function PlanosMedico() {
                     : "1px solid #e2e8f0",
                 }}
               >
-                {/* BADGE DESTAQUE */}
                 {plano.badge && (
                   <div
                     className="position-absolute top-0 start-50 translate-middle badge rounded-pill px-3 py-2 fw-bold shadow-sm"
@@ -196,7 +192,6 @@ export function PlanosMedico() {
                 )}
 
                 <div className="card-body p-4 p-xl-5 d-flex flex-column">
-                  {/* ÍCONE E TÍTULO */}
                   <div className="d-flex align-items-center gap-3 mb-3">
                     <div
                       className="rounded-3 d-flex align-items-center justify-content-center"
@@ -219,7 +214,6 @@ export function PlanosMedico() {
 
                   <p className="text-muted small mb-4">{plano.descricao}</p>
 
-                  {/* PREÇO */}
                   <div className="mb-4 pb-3 border-bottom">
                     <div className="d-flex align-items-baseline">
                       <span className="fs-5 fw-bold text-muted me-1">R$</span>
@@ -240,7 +234,6 @@ export function PlanosMedico() {
                     </small>
                   </div>
 
-                  {/* LISTA DE BENEFÍCIOS */}
                   <div className="mb-4 flex-grow-1">
                     <span className="text-muted small fw-bold text-uppercase d-block mb-3">
                       Recursos Inclusos:
@@ -265,11 +258,10 @@ export function PlanosMedico() {
                     </ul>
                   </div>
 
-                  {/* BOTÃO DE AÇÃO */}
                   <button
                     className={`btn btn-lg w-100 fw-bold py-3 shadow-sm ${plano.destaque
-                        ? "btn-primary"
-                        : "btn-outline-secondary"
+                      ? "btn-primary"
+                      : "btn-outline-secondary"
                       }`}
                     style={{ borderRadius: "12px" }}
                     onClick={() => handleAssinar(plano)}
@@ -283,7 +275,6 @@ export function PlanosMedico() {
         })}
       </div>
 
-      {/* BENEFÍCIOS DO CONSULTÓRIO VIRTUAL */}
       <section className="my-5 py-4 bg-white rounded-4 shadow-sm border p-4 p-md-5">
         <div className="text-center mb-5">
           <h2 className="fw-bold" style={{ color: "var(--aa-brown)" }}>
@@ -389,7 +380,7 @@ export function PlanosMedico() {
         </div>
       </section>
 
-      {/* SEÇÃO DE DÚVIDAS FREQUENTES (FAQ) */}
+
       <section className="my-5">
         <div className="text-center mb-4">
           <h3 className="fw-bold" style={{ color: "var(--aa-brown)" }}>
@@ -435,7 +426,7 @@ export function PlanosMedico() {
         </div>
       </section>
 
-      {/* BANNER CTA INFERIOR */}
+
       <section className="cta-section text-center p-5 rounded-4 mt-5 text-white shadow-sm">
         <h3 className="fw-bold mb-2">Pronto para começar seu atendimento digital?</h3>
         <p className="lead mb-4 opacity-90">
@@ -476,7 +467,6 @@ export function PlanosMedico() {
         />
       )}
 
-      {/* ESTILOS ESPECÍFICOS DOS CARDS DE PREÇO */}
       <style>{`
         .pricing-card-featured {
           transform: scale(1.03);
