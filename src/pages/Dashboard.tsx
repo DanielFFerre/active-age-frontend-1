@@ -658,25 +658,25 @@ export function Dashboard() {
                   </h4>
                   {agendamentos.filter((a) => a.status === "AGENDADO").length >
                     0 && (
-                    <div>
-                      <button
-                        className="btn btn-sm btn-light border rounded-circle me-2"
-                        onClick={() => scroll(agendaMedicoRef, "left")}
-                      >
-                        <i className="bi bi-chevron-left"></i>
-                      </button>
-                      <button
-                        className="btn btn-sm btn-light border rounded-circle"
-                        onClick={() => scroll(agendaMedicoRef, "right")}
-                      >
-                        <i className="bi bi-chevron-right"></i>
-                      </button>
-                    </div>
-                  )}
+                      <div>
+                        <button
+                          className="btn btn-sm btn-light border rounded-circle me-2"
+                          onClick={() => scroll(agendaMedicoRef, "left")}
+                        >
+                          <i className="bi bi-chevron-left"></i>
+                        </button>
+                        <button
+                          className="btn btn-sm btn-light border rounded-circle"
+                          onClick={() => scroll(agendaMedicoRef, "right")}
+                        >
+                          <i className="bi bi-chevron-right"></i>
+                        </button>
+                      </div>
+                    )}
                 </div>
 
                 {agendamentos.filter((a) => a.status === "AGENDADO").length >
-                0 ? (
+                  0 ? (
                   <div
                     className="horizontal-scroll gap-3 pb-2"
                     ref={agendaMedicoRef}
